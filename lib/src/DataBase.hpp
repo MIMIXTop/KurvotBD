@@ -16,6 +16,7 @@ public:
 
     void appendModel(lib::Models::Model &&model);
 
+    std::optional<lib::Models::Model> getModelById(lib::Models::Model modelType, const std::string &id);
     ~DataBase();
 
 private:
@@ -27,7 +28,20 @@ private:
         std::apply([&](auto&&... args) {
             pqxx::params ps;
             (lib::Sql::appendParam(ps, args), ...);
-            txn.exec(lib::Meta::ModelMeta<T>::query, ps);
+            txn.exec(lib::Meta::ModelMeta<T>::Query::insert, ps);
         }, values);
+    }
+
+    template <typename T>
+    static std::optional<lib::Models::Model> selectModelById(pqxx::work& txn, const T&, const std::string &id) {
+        pqxx::params ps;
+        ps.append(id);
+        auto res = txn.exec(lib::Meta::ModelMeta<T>::Query::selectById, ps);
+
+        if (res.empty()) {
+            return std::nullopt;
+        }
+
+        return lib::Meta::ModelMeta<T>::fromRow(res[0]);
     }
 };

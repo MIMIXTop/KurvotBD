@@ -46,3 +46,19 @@ void DataBase::appendModel(lib::Models::Model &&model) {
         std::println(std::cerr, "Error appending model: {}", e.what());
     }
 }
+
+std::optional<lib::Models::Model> DataBase::getModelById(lib::Models::Model modelType, const std::string &id) {
+    try {
+        pqxx::work txn(connection);
+
+        auto res = std::visit([&](auto&& m) {
+            return selectModelById(txn, m, id);
+        }, std::move(modelType));
+
+        txn.commit();
+        return res;
+    } catch (const std::exception& e) {
+        std::println(std::cerr, "Error getting model id: {}", e.what());
+    }
+    return std::nullopt;
+}

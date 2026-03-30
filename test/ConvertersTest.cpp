@@ -143,3 +143,138 @@ TEST(ToParams, EnumConversion) {
 TEST(ToParams, VectorToPgArray) {
     EXPECT_EQ(toParams(std::vector<std::string>{"a", "b"}), "{a,b}");
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// parsePgArray — "{a,b,c}" → vector<string>
+// ═══════════════════════════════════════════════════════════════════
+
+TEST(ParsePgArray, Empty) {
+    auto v = parsePgArray("{}");
+    EXPECT_TRUE(v.empty());
+}
+
+TEST(ParsePgArray, SingleElement) {
+    auto v = parsePgArray("{C++}");
+    ASSERT_EQ(v.size(), 1u);
+    EXPECT_EQ(v[0], "C++");
+}
+
+TEST(ParsePgArray, MultipleElements) {
+    auto v = parsePgArray("{C++,Python,Rust}");
+    ASSERT_EQ(v.size(), 3u);
+    EXPECT_EQ(v[0], "C++");
+    EXPECT_EQ(v[1], "Python");
+    EXPECT_EQ(v[2], "Rust");
+}
+
+TEST(ParsePgArray, RoundTrip) {
+    std::vector<std::string> original = {"Boost", "Qt", "gtest"};
+    auto pg = toPgArray(original);
+    auto parsed = parsePgArray(pg);
+    EXPECT_EQ(parsed, original);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// parseXxx — string → enum (обратные к toString)
+// ═══════════════════════════════════════════════════════════════════
+
+TEST(ParseEnum, DepartmentType) {
+    EXPECT_EQ(parseDepartmentType("разработка"), DepartmentType::Development);
+    EXPECT_EQ(parseDepartmentType("тестирование"), DepartmentType::Testing);
+    EXPECT_EQ(parseDepartmentType("техподдержка"), DepartmentType::Tech_support);
+    EXPECT_EQ(parseDepartmentType("управление_проектами"), DepartmentType::Project_management);
+    EXPECT_EQ(parseDepartmentType("административный"), DepartmentType::Administrative);
+}
+
+TEST(ParseEnum, PositionCategory) {
+    EXPECT_EQ(parsePositionCategory("технический_персонал"), PositionCategory::Technical_staff);
+    EXPECT_EQ(parsePositionCategory("руководящий_состав"), PositionCategory::Management);
+}
+
+TEST(ParseEnum, ClientType) {
+    EXPECT_EQ(parseClientType("корпоративный"), ClientType::Corporate);
+    EXPECT_EQ(parseClientType("государственный"), ClientType::Government);
+    EXPECT_EQ(parseClientType("ИП"), ClientType::Individual_entrepreneur);
+}
+
+TEST(ParseEnum, LicenseType) {
+    EXPECT_EQ(parseLicenseType("бессрочная"), LicenseType::Perpetual);
+    EXPECT_EQ(parseLicenseType("подписка"), LicenseType::Subscription);
+}
+
+TEST(ParseEnum, ProjectStatus) {
+    EXPECT_EQ(parseProjectStatus("в_разработке"), ProjectStatus::In_development);
+    EXPECT_EQ(parseProjectStatus("завершен"), ProjectStatus::Completed);
+    EXPECT_EQ(parseProjectStatus("отложен"), ProjectStatus::Postponed);
+    EXPECT_EQ(parseProjectStatus("закрыт_досрочно"), ProjectStatus::Closed_early);
+}
+
+TEST(ParseEnum, ProjectMethodology) {
+    EXPECT_EQ(parseProjectMethodology("Waterfall"), ProjectMethodology::Waterfall);
+    EXPECT_EQ(parseProjectMethodology("Scrum"), ProjectMethodology::Scrum);
+    EXPECT_EQ(parseProjectMethodology("Kanban"), ProjectMethodology::Kanban);
+    EXPECT_EQ(parseProjectMethodology("гибридная"), ProjectMethodology::Hybrid);
+}
+
+TEST(ParseEnum, ProjectType) {
+    EXPECT_EQ(parseProjectType("веб-приложение"), ProjectType::Web_application);
+    EXPECT_EQ(parseProjectType("мобильное_приложение"), ProjectType::Mobile_application);
+    EXPECT_EQ(parseProjectType("корпоративная_система"), ProjectType::Corporate_system);
+    EXPECT_EQ(parseProjectType("микросервис"), ProjectType::Microservice);
+}
+
+TEST(ParseEnum, BugSeverity) {
+    EXPECT_EQ(parseBugSeverity("блокирующая"), BugSeverity::Blocking);
+    EXPECT_EQ(parseBugSeverity("критическая"), BugSeverity::Critical);
+    EXPECT_EQ(parseBugSeverity("средняя"), BugSeverity::Medium);
+    EXPECT_EQ(parseBugSeverity("низкая"), BugSeverity::Low);
+}
+
+TEST(ParseEnum, BugStatus) {
+    EXPECT_EQ(parseBugStatus("новая"), BugStatus::New);
+    EXPECT_EQ(parseBugStatus("в_работе"), BugStatus::In_progress);
+    EXPECT_EQ(parseBugStatus("исправлена"), BugStatus::Fixed);
+    EXPECT_EQ(parseBugStatus("проверена"), BugStatus::Verified);
+}
+
+TEST(ParseEnum, DocType) {
+    EXPECT_EQ(parseDocType("архитектура"), DocType::Architecture);
+    EXPECT_EQ(parseDocType("API"), DocType::API);
+    EXPECT_EQ(parseDocType("руководство_пользователя"), DocType::User_guide);
+    EXPECT_EQ(parseDocType("руководство_администратора"), DocType::Admin_guide);
+    EXPECT_EQ(parseDocType("спецификация"), DocType::Specification);
+}
+
+TEST(ParseEnum, CloudProvider) {
+    EXPECT_EQ(parseCloudProvider("AWS"), CloudProvider::AWS);
+    EXPECT_EQ(parseCloudProvider("Azure"), CloudProvider::Azure);
+    EXPECT_EQ(parseCloudProvider("GCP"), CloudProvider::GCP);
+    EXPECT_EQ(parseCloudProvider("Yandex_Cloud"), CloudProvider::Yandex_Cloud);
+    EXPECT_EQ(parseCloudProvider("другой"), CloudProvider::Other);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Round-trip: toString → parseXxx → тот же enum
+// ═══════════════════════════════════════════════════════════════════
+
+TEST(ParseEnum, RoundTripDepartment) {
+    for (auto e : {DepartmentType::Development, DepartmentType::Testing,
+                   DepartmentType::Tech_support, DepartmentType::Project_management,
+                   DepartmentType::Administrative}) {
+        EXPECT_EQ(parseDepartmentType(toString(e)), e);
+    }
+}
+
+TEST(ParseEnum, RoundTripBugSeverity) {
+    for (auto e : {BugSeverity::Blocking, BugSeverity::Critical,
+                   BugSeverity::Medium, BugSeverity::Low}) {
+        EXPECT_EQ(parseBugSeverity(toString(e)), e);
+    }
+}
+
+TEST(ParseEnum, RoundTripCloudProvider) {
+    for (auto e : {CloudProvider::AWS, CloudProvider::Azure, CloudProvider::GCP,
+                   CloudProvider::Yandex_Cloud, CloudProvider::Other}) {
+        EXPECT_EQ(parseCloudProvider(toString(e)), e);
+    }
+}
