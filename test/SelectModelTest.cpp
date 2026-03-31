@@ -6,7 +6,7 @@
 using namespace lib::Models;
 
 static const std::string connStr =
-    "host=127.0.0.1 port=5432 dbname=db user=user password=pass";
+    "host=127.0.0.1 port=5432 dbname=db_test user=user password=pass";
 
 class SelectModelTest : public ::testing::Test {
 protected:
@@ -29,16 +29,12 @@ protected:
     }
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// Department — enum
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(SelectModelTest, SelectDepartmentById) {
     db->appendModel(Department{
         .id = 0, .name = "Тест", .type = DepartmentType::Testing
     });
 
-    auto result = db->getModelById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
+    auto result = db->getModelById(Department{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto dept = std::get<Department>(*result);
@@ -47,17 +43,13 @@ TEST_F(SelectModelTest, SelectDepartmentById) {
     EXPECT_EQ(dept.type, DepartmentType::Testing);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Position — enum + doubles
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(SelectModelTest, SelectPositionById) {
     db->appendModel(Position{
         .id = 0, .title = "Dev", .category = PositionCategory::Management,
         .min_salary = 100000.0, .max_salary = 250000.0
     });
 
-    auto result = db->getModelById(Position{.id=0,.title="",.category=PositionCategory::Technical_staff,.min_salary=0,.max_salary=0,.created_at=""}, "1");
+    auto result = db->getModelById(Position{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto pos = std::get<Position>(*result);
@@ -67,10 +59,6 @@ TEST_F(SelectModelTest, SelectPositionById) {
     EXPECT_DOUBLE_EQ(pos.max_salary, 250000.0);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Client — optional NULL
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(SelectModelTest, SelectClientWithNullOptional) {
     db->appendModel(Client{
         .id = 0, .name = "ООО Тест", .type = ClientType::Corporate,
@@ -78,7 +66,7 @@ TEST_F(SelectModelTest, SelectClientWithNullOptional) {
         .email = "test@test.ru", .registration_date = "2024-01-01"
     });
 
-    auto result = db->getModelById(Client{.id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "1");
+    auto result = db->getModelById(Client{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto c = std::get<Client>(*result);
@@ -89,10 +77,6 @@ TEST_F(SelectModelTest, SelectClientWithNullOptional) {
     EXPECT_EQ(c.email, "test@test.ru");
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Client — optional со значениями
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(SelectModelTest, SelectClientWithValueOptional) {
     db->appendModel(Client{
         .id = 0, .name = "ИП Иванов", .type = ClientType::Individual_entrepreneur,
@@ -101,17 +85,13 @@ TEST_F(SelectModelTest, SelectClientWithValueOptional) {
         .email = "ivanov@biz.ru", .registration_date = "2025-01-01"
     });
 
-    auto result = db->getModelById(Client{.id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "1");
+    auto result = db->getModelById(Client{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto c = std::get<Client>(*result);
     EXPECT_EQ(c.address.value(), "ул. Пушкина, 1");
     EXPECT_EQ(c.phone.value(), "+79990001122");
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// Employee — много полей + optional
-// ═══════════════════════════════════════════════════════════════════
 
 TEST_F(SelectModelTest, SelectEmployeeById) {
     db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
@@ -126,7 +106,7 @@ TEST_F(SelectModelTest, SelectEmployeeById) {
         .department_id = 1, .position_id = 1, .is_active = true
     });
 
-    auto result = db->getModelById(Employee{.id=0,.last_name="",.first_name="",.hire_date="",.salary=0,.has_children=false,.children_count=0,.department_id=0,.position_id=0,.is_active=false,.created_at="",.updated_at=""}, "1");
+    auto result = db->getModelById(Employee{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto e = std::get<Employee>(*result);
@@ -138,10 +118,6 @@ TEST_F(SelectModelTest, SelectEmployeeById) {
     EXPECT_DOUBLE_EQ(e.salary, 180000.0);
     EXPECT_EQ(e.is_active, true);
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// DeveloperSpecialization — TEXT[] массивы
-// ═══════════════════════════════════════════════════════════════════
 
 TEST_F(SelectModelTest, SelectDeveloperSpecializationById) {
     db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
@@ -159,7 +135,7 @@ TEST_F(SelectModelTest, SelectDeveloperSpecializationById) {
         .backend_exp = true, .frontend_exp = false, .mobile_exp = false
     });
 
-    auto result = db->getModelById(DeveloperSpecialization{.employee_id=0,.created_at=""}, "1");
+    auto result = db->getModelById(DeveloperSpecialization{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto d = std::get<DeveloperSpecialization>(*result);
@@ -170,16 +146,12 @@ TEST_F(SelectModelTest, SelectDeveloperSpecializationById) {
     EXPECT_EQ(d.frontend_exp, false);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Non-existent ID — nullopt
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(SelectModelTest, SelectNonExistentDepartment) {
-    auto result = db->getModelById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "999");
+    auto result = db->getModelById(Department{}, "999");
     EXPECT_FALSE(result.has_value());
 }
 
 TEST_F(SelectModelTest, SelectNonExistentClient) {
-    auto result = db->getModelById(Client{.id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "42");
+    auto result = db->getModelById(Client{}, "42");
     EXPECT_FALSE(result.has_value());
 }

@@ -8,10 +8,6 @@ using namespace lib::Models;
 static const std::string connStr =
     "host=127.0.0.1 port=5432 dbname=db user=user password=pass";
 
-// ═══════════════════════════════════════════════════════════════════
-// Фикстура: подключение к БД + очистка таблиц после каждого теста
-// ═══════════════════════════════════════════════════════════════════
-
 class AppendModelTest : public ::testing::Test {
 protected:
     std::unique_ptr<DataBase> db;
@@ -39,10 +35,6 @@ protected:
     }
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// Department — enum конвертация
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(AppendModelTest, InsertDepartment) {
     db->appendModel(Department{
         .id = 0,
@@ -57,10 +49,6 @@ TEST_F(AppendModelTest, InsertDepartment) {
     EXPECT_EQ(r[0]["name"].as<std::string>(), "Тестовый отдел");
     EXPECT_EQ(r[0]["type"].as<std::string>(), "тестирование");
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// Position — enum + doubles
-// ═══════════════════════════════════════════════════════════════════
 
 TEST_F(AppendModelTest, InsertPosition) {
     db->appendModel(Position{
@@ -81,17 +69,13 @@ TEST_F(AppendModelTest, InsertPosition) {
     EXPECT_DOUBLE_EQ(r[0]["max_salary"].as<double>(), 150000.0);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Client — optional поля (address = NULL)
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(AppendModelTest, InsertClientWithNullOptional) {
     db->appendModel(Client{
         .id = 0,
         .name = "ООО Тест",
         .type = ClientType::Corporate,
-        .address = std::nullopt,       // → NULL
-        .phone = std::nullopt,         // → NULL
+        .address = std::nullopt,
+        .phone = std::nullopt,
         .email = "test@test.ru",
         .registration_date = "2024-06-15"
     });
@@ -106,10 +90,6 @@ TEST_F(AppendModelTest, InsertClientWithNullOptional) {
     EXPECT_TRUE(r[0]["phone"].is_null());
     EXPECT_EQ(r[0]["email"].as<std::string>(), "test@test.ru");
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// Client — optional поля со значениями
-// ═══════════════════════════════════════════════════════════════════
 
 TEST_F(AppendModelTest, InsertClientWithValueOptional) {
     db->appendModel(Client{
@@ -128,12 +108,7 @@ TEST_F(AppendModelTest, InsertClientWithValueOptional) {
     EXPECT_EQ(r[0]["phone"].as<std::string>(), "+79990001122");
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// Employee — много полей + optional
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(AppendModelTest, InsertEmployee) {
-    // Сначала нужен department и position
     db->appendModel(Department{.id = 0, .name = "IT", .type = DepartmentType::Development});
     db->appendModel(Position{
         .id = 0, .title = "Dev", .category = PositionCategory::Technical_staff,
@@ -175,12 +150,7 @@ TEST_F(AppendModelTest, InsertEmployee) {
     EXPECT_EQ(r[0]["is_active"].as<bool>(), true);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// DeveloperSpecialization — TEXT[] массивы
-// ═══════════════════════════════════════════════════════════════════
-
 TEST_F(AppendModelTest, InsertDeveloperSpecialization) {
-    // Нужен employee
     db->appendModel(Department{.id = 0, .name = "IT", .type = DepartmentType::Development});
     db->appendModel(Position{
         .id = 0, .title = "Dev", .category = PositionCategory::Technical_staff,
@@ -211,7 +181,6 @@ TEST_F(AppendModelTest, InsertDeveloperSpecialization) {
         "SELECT programming_languages, frameworks, experience_years, "
         "backend_exp, frontend_exp FROM developerspecialization"
     );
-    // PostgreSQL возвращает массивы в формате {C++,Rust,Go}
     EXPECT_EQ(r[0]["programming_languages"].as<std::string>(), "{C++,Rust,Go}");
     EXPECT_EQ(r[0]["frameworks"].as<std::string>(), "{Boost,Qt}");
     EXPECT_EQ(r[0]["experience_years"].as<int>(), 7);

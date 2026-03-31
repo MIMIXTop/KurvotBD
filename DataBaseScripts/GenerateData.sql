@@ -2,7 +2,6 @@
 -- ГЕНЕРАЦИЯ ТЕСТОВЫХ ДАННЫХ
 -- ============================================
 
--- Очистка таблиц перед вставкой данных (в обратном порядке зависимостей)
 TRUNCATE TABLE Documentation CASCADE;
 TRUNCATE TABLE Release CASCADE;
 TRUNCATE TABLE Bug CASCADE;
@@ -621,3 +620,25 @@ UNION ALL
 SELECT 'CloudResource', COUNT(*)
 FROM CloudResource
 ORDER BY table_name;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

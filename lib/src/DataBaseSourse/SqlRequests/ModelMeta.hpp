@@ -22,6 +22,15 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM department WHERE department_id = $1";
+
+            static constexpr std::string_view deleteById =
+                "DELETE FROM department WHERE department_id = $1";
+
+            static constexpr std::string_view selectAll =
+                "SELECT * FROM department";
+
+            static constexpr std::string_view updateById =
+                "UPDATE department SET name = $1, type = $2 WHERE department_id = $3";
         };
 
         static auto extract(const Models::Department &m) {
@@ -51,6 +60,15 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * from position WHERE position_id = $1";
+
+            static constexpr std::string_view deleteById =
+                "DELETE from position WHERE position_id = $1";
+
+            static constexpr std::string_view selectAll =
+                "SELECT * FROM position";
+
+            static constexpr std::string_view updateById =
+                "UPDATE position SET title = $1, category = $2, min_salary = $3, max_salary = $4 WHERE position_id = $5";
         };
 
         static auto extract(const Models::Position &m) {
@@ -84,6 +102,15 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM client WHERE client_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM client WHERE client_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM client";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE client SET name = $1, type = $2, address = $3, phone = $4, email = $5, registration_date = $6 WHERE client_id = $7";
         };
 
         static auto extract(const Models::Client &m) {
@@ -125,6 +152,15 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM softwarelicense WHERE license_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM softwarelicense WHERE license_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM softwarelicense";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE softwarelicense SET name = $1, vendor = $2, license_type = $3, purchase_date = $4, expiry_date = $5, cost = $6, seats = $7 WHERE license_id = $8";
         };
 
         static auto extract(const Models::SoftwareLicense &m) {
@@ -168,6 +204,19 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM employee WHERE employee_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM employee WHERE employee_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM employee";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE employee SET last_name = $1, first_name = $2, patronymic = $3, "
+                    "birth_date = $4, gender = $5, phone = $6, email = $7, hire_date = $8, "
+                    "salary = $9, has_children = $10, children_count = $11, "
+                    "department_id = $12, position_id = $13, is_active = $14 "
+                    "WHERE employee_id = $15";
         };
 
         static auto extract(const Models::Employee &m) {
@@ -229,6 +278,17 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM developerspecialization WHERE employee_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM developerspecialization WHERE employee_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM developerspecialization";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE developerspecialization SET programming_languages = $1, "
+                    "frameworks = $2, experience_years = $3, backend_exp = $4, "
+                    "frontend_exp = $5, mobile_exp = $6 WHERE employee_id = $7";
         };
 
         static auto extract(const Models::DeveloperSpecialization &m) {
@@ -270,6 +330,16 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM testerspecialization WHERE employee_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM testerspecialization WHERE employee_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM testerspecialization";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE testerspecialization SET testing_types = $1, "
+                    "automation_tools = $2, certifications = $3 WHERE employee_id = $4";
         };
 
         static auto extract(const Models::TesterSpecialization &m) {
@@ -306,6 +376,17 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM managercertification WHERE certification_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM managercertification WHERE certification_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM managercertification";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE managercertification SET employee_id = $1, cert_type = $2, "
+                    "issue_date = $3, expiry_date = $4, project_complexity = $5 "
+                    "WHERE certification_id = $6";
         };
 
         static auto extract(const Models::ManagerCertification &m) {
@@ -347,6 +428,18 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM project WHERE project_id = $1";
+
+            static constexpr std::string_view deleteById =
+                "DELETE FROM project WHERE project_id = $1";
+
+            static constexpr std::string_view selectAll =
+                "SELECT * FROM project";
+
+            static constexpr std::string_view updateById =
+                "UPDATE project SET name = $1, description = $2, client_id = $3, "
+                "start_date = $4, planned_end_date = $5, actual_end_date = $6, "
+                "budget = $7, status = $8, methodology = $9, type = $10, "
+                "tech_stack = $11, is_active = $12 WHERE project_id = $13";
         };
 
         static auto extract(const Models::Project &m) {
@@ -411,6 +504,16 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM projectphase WHERE phase_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM projectphase WHERE phase_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM projectphase";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE projectphase SET project_id = $1, name = $2, start_date = $3, "
+                    "end_date = $4, order_number = $5 WHERE phase_id = $6";
         };
 
         static auto extract(const Models::ProjectPhase &m) {
@@ -449,6 +552,17 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM projectassignment WHERE assignment_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM projectassignment WHERE assignment_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM projectassignment";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE projectassignment SET employee_id = $1, project_id = $2, "
+                    "phase_id = $3, role = $4, start_date = $5, end_date = $6, "
+                    "hours_allocated = $7 WHERE assignment_id = $8";
         };
 
         static auto extract(const Models::ProjectAssignment &m) {
@@ -494,6 +608,16 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM licenseallocation WHERE allocation_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM licenseallocation WHERE allocation_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM licenseallocation";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE licenseallocation SET license_id = $1, project_id = $2, "
+                    "allocated_seats = $3, allocation_date = $4 WHERE allocation_id = $5";
         };
 
         static auto extract(const Models::LicenseAllocation &m) {
@@ -529,6 +653,16 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM cloudresource WHERE resource_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM cloudresource WHERE resource_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM cloudresource";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE cloudresource SET project_id = $1, provider = $2, type = $3, "
+                    "configuration = $4, cost_per_hour = $5 WHERE resource_id = $6";
         };
 
         static auto extract(const Models::CloudResource &m) {
@@ -564,6 +698,17 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM worklog WHERE log_id = $1";
+
+            static constexpr std::string_view deleteById =
+                "DELETE FROM worklog WHERE log_id = $1";
+
+            static constexpr std::string_view selectAll =
+                "SELECT * FROM worklog";
+
+            static constexpr std::string_view updateById =
+                "UPDATE worklog SET employee_id = $1, project_id = $2, "
+                "task_description = $3, work_date = $4, hours_spent = $5 "
+                "WHERE log_id = $6";
         };
 
         static auto extract(const Models::WorkLog &m) {
@@ -600,6 +745,17 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                     "SELECT * FROM bug WHERE bug_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM bug WHERE bug_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM bug";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE bug SET project_id = $1, title = $2, description = $3, "
+                    "severity = $4, status = $5, found_date = $6, fixed_date = $7, "
+                    "found_by = $8, fixed_by = $9 WHERE bug_id = $10";
         };
 
         static auto extract(const Models::Bug &m) {
@@ -648,7 +804,17 @@ namespace lib::Meta {
                     "VALUES ($1, $2, $3, $4, $5)";
 
             static constexpr std::string_view selectById =
-                "SELECT * FROM release WHERE release_id = $1";
+                    "SELECT * FROM release WHERE release_id = $1";
+
+            static constexpr std::string_view deleteById =
+                    "DELETE FROM release WHERE release_id = $1";
+
+            static constexpr std::string_view selectAll =
+                    "SELECT * FROM release";
+
+            static constexpr std::string_view updateById =
+                    "UPDATE release SET project_id = $1, version = $2, release_date = $3, "
+                    "changelog = $4, fixed_bugs_count = $5 WHERE release_id = $6";
         };
 
         static auto extract(const Models::Release &m) {
@@ -687,6 +853,17 @@ namespace lib::Meta {
 
             static constexpr std::string_view selectById =
                 "SELECT * FROM documentation WHERE doc_id = $1";
+
+            static constexpr std::string_view deleteById =
+                "DELETE FROM documentation WHERE doc_id = $1";
+
+            static constexpr std::string_view selectAll =
+                "SELECT * FROM documentation";
+
+            static constexpr std::string_view updateById =
+                "UPDATE documentation SET project_id = $1, type = $2, author_id = $3, "
+                "creation_date = $4, last_update = $5, storage_path = $6 "
+                "WHERE doc_id = $7";
         };
 
         static auto extract(const Models::Documentation &m) {

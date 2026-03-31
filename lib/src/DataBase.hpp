@@ -17,6 +17,13 @@ public:
     void appendModel(lib::Models::Model &&model);
 
     std::optional<lib::Models::Model> getModelById(lib::Models::Model modelType, const std::string &id);
+
+    void deleteById(lib::Models::Model model, const std::string &id);
+
+    std::vector<lib::Models::Model> selectAll(lib::Models::Model modelType);
+
+    void updateById(lib::Models::Model model, const std::string &id);
+
     ~DataBase();
 
 private:
@@ -43,5 +50,37 @@ private:
         }
 
         return lib::Meta::ModelMeta<T>::fromRow(res[0]);
+    }
+
+    template <typename T>
+    static void deleteModel(pqxx::work& txn, const T&, const std::string &id) {
+        pqxx::params ps;
+        ps.append(id);
+        txn.exec(lib::Meta::ModelMeta<T>::Query::deleteById, ps);
+    }
+
+    template <typename T>
+    static std::vector<T> selectAllModels(pqxx::work& txn, const T &) {
+        auto res = txn.exec(lib::Meta::ModelMeta<T>::Query::selectAll);
+
+        std::vector<T> models;
+        models.reserve(res.size());
+
+        for (const auto& row : res) {
+            models.push_back(lib::Meta::ModelMeta<T>::fromRow(row));
+        }
+
+        return models;
+    }
+
+    template <typename T>
+    static void updateModel(pqxx::work& txn, const T &model, const std::string &id) {
+        auto values = lib::Meta::ModelMeta<T>::extract(model);
+        std::apply([&](auto&&... args) {
+            pqxx::params ps;
+            (lib::Sql::appendParam(ps, args), ...);
+            ps.append(id);
+            txn.exec(lib::Meta::ModelMeta<T>::Query::updateById, ps);
+        }, values);
     }
 };

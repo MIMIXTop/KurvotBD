@@ -2,11 +2,16 @@
 #include <string>
 #include <vector>
 #include "Converters.hpp"
+#include "util/util.hpp"
 
 namespace lib::Converters {
-    inline int toParams(int v)  { return v; }
-    inline double toParams(double v)  { return v; }
-    inline bool toParams(bool v)  { return v; }
+
+    template<typename T>
+    std::enable_if_t<util::is_one_of<T>::value, T&&>
+    toParams(T&& v) {
+        return std::forward<T>(v);
+    }
+
     inline const std::string& toParams(const std::string& v)  { return v; }
 
     template<typename E> requires std::is_enum_v<E>

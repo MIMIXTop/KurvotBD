@@ -81,25 +81,25 @@ namespace lib::Models {
     };
 
     struct Department {
-        int id;
+        int id = 0;
         std::string name;
-        DepartmentType type;
+        DepartmentType type = DepartmentType::Development;
         std::string created_at;
     };
 
     struct Position {
-        int id;
+        int id = 0;
         std::string title;
-        PositionCategory category;
-        double min_salary;
-        double max_salary;
+        PositionCategory category = PositionCategory::Technical_staff;
+        double min_salary = 0.0;
+        double max_salary = 0.0;
         std::string created_at;
     };
 
     struct Client {
-        int id;
+        int id = 0;
         std::string name;
-        ClientType type;
+        ClientType type = ClientType::Corporate;
         std::optional<std::string> address;
         std::optional<std::string> phone;
         std::string email;
@@ -120,7 +120,7 @@ namespace lib::Models {
     };
 
     struct Employee {
-        int id;
+        int id = 0;
         std::string last_name;
         std::string first_name;
         std::optional<std::string> patronymic;
@@ -129,24 +129,24 @@ namespace lib::Models {
         std::optional<std::string> phone;
         std::string email;
         std::string hire_date;
-        double salary;
-        bool has_children;
-        int children_count;
-        int department_id;
-        int position_id;
-        bool is_active;
+        double salary = 0.0;
+        bool has_children = false;
+        int children_count = 0;
+        int department_id = 0;
+        int position_id = 0;
+        bool is_active = false;
         std::string created_at;
         std::string updated_at;
     };
 
     struct DeveloperSpecialization {
-        int employee_id;
+        int employee_id = 0;
         std::vector<std::string> programming_languages;
         std::vector<std::string> frameworks;
-        int experience_years;
-        bool backend_exp;
-        bool frontend_exp;
-        bool mobile_exp;
+        int experience_years = 0;
+        bool backend_exp = false;
+        bool frontend_exp = false;
+        bool mobile_exp = false;
         std::string created_at;
     };
 
@@ -222,7 +222,7 @@ namespace lib::Models {
         int project_id;
         CloudProvider provider;
         std::string type;
-        std::string configuration; // JSON
+        std::string configuration;
         double cost_per_hour;
         std::string created_at;
     };
