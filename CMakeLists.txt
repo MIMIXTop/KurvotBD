@@ -4,6 +4,11 @@ project(Kurvot)
 include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 FetchContent_Declare(
         googletest
@@ -13,13 +18,20 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(googletest)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick Gui Widgets)
+
+qt_add_executable(Kurvot src/main.cpp)
+
+qt_add_qml_module(Kurvot
+    URI Kurvot_URI
+    QML_FILES
+        src/Main.qml
+)
 
 add_subdirectory(lib)
 
-target_link_libraries(Kurvot PUBLIC Kurvot_lib)
+target_link_libraries(Kurvot PUBLIC Kurvot_lib Qt6::Core Qt6::Qml Qt6::Quick Qt6::Gui Qt6::Widgets)
 
-# Tests
 enable_testing()
 
 file(GLOB_RECURSE TEST_SRCS test/*.cpp)
