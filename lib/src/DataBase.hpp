@@ -3,6 +3,7 @@
 #include <pqxx/pqxx>
 
 #include "Models.hpp"
+#include "SqlFunctions.hpp"
 
 #include "DataBaseSourse/SqlRequests/ModelMeta.hpp"
 #include "DataBaseSourse/SqlRequests/AppendParam.hpp"
@@ -23,6 +24,105 @@ public:
     std::vector<lib::Models::Model> selectAll(lib::Models::Model modelType);
 
     void updateById(lib::Models::Model model, const std::string &id);
+
+    std::vector<lib::SqlFunctions::ProjectFilterResult> getProjectsByFilters();
+    std::vector<lib::SqlFunctions::ProjectFilterResult> getProjectsByFilters(
+        const std::vector<std::string>& statuses,
+        const std::optional<std::string>& completedFrom,
+        const std::optional<std::string>& completedTo,
+        const std::optional<int>& clientId,
+        const std::optional<std::string>& methodologyFilter,
+        const std::optional<std::vector<std::string>>& clientTypes,
+        const std::optional<double>& minBudget,
+        const std::optional<double>& maxBudget,
+        const std::optional<bool>& isActive
+    );
+
+    std::vector<lib::SqlFunctions::ProjectProfitabilityResult> getProjectProfitability();
+    std::vector<lib::SqlFunctions::ProjectProfitabilityResult> getProjectProfitability(
+        const std::optional<std::string>& from,
+        const std::optional<std::string>& to,
+        const std::optional<bool>& isActive
+    );
+
+    std::vector<lib::SqlFunctions::InfrastructureReportResult> getInfrastructureReport();
+    std::vector<lib::SqlFunctions::InfrastructureReportResult> getInfrastructureReport(
+        const std::optional<bool>& isActive,
+        const std::optional<int>& projectId
+    );
+
+    std::vector<lib::SqlFunctions::ProjectTechnologyResult> getProjectTechnologies();
+    std::vector<lib::SqlFunctions::ProjectTechnologyResult> getProjectTechnologies(
+        const std::optional<bool>& isActive,
+        const std::optional<std::string>& techName
+    );
+
+    std::vector<lib::SqlFunctions::EmployeeFilterResult> getEmployeeByFilters();
+    std::vector<lib::SqlFunctions::EmployeeFilterResult> getEmployeeByFilters(
+        const std::optional<std::vector<int>>& departmentIds,
+        const std::optional<std::vector<std::string>>& positionTitles,
+        const std::optional<int>& minExperience,
+        const std::optional<int>& maxExperience,
+        const std::optional<int>& minAge,
+        const std::optional<int>& maxAge,
+        const std::optional<double>& minSalary,
+        const std::optional<double>& maxSalary,
+        const std::optional<bool>& isActive
+    );
+
+    std::vector<lib::SqlFunctions::ProjectTeamResult> getProjectTeam();
+    std::vector<lib::SqlFunctions::ProjectTeamResult> getProjectTeam(
+        const std::optional<int>& projectId,
+        const std::optional<int>& phaseId,
+        const std::optional<std::vector<std::string>>& roles,
+        const std::optional<bool>& isActive
+    );
+
+    std::vector<lib::SqlFunctions::BugFilterResult> getBugsByFilter();
+    std::vector<lib::SqlFunctions::BugFilterResult> getBugsByFilter(
+        const std::optional<int>& projectId,
+        const std::optional<std::vector<std::string>>& bugStatus,
+        const std::optional<std::vector<std::string>>& bugSeverity,
+        const std::optional<std::string>& foundFrom,
+        const std::optional<std::string>& foundTo
+    );
+
+    std::vector<lib::SqlFunctions::TestingEfficiencyResult> getTestingEfficiency();
+    std::vector<lib::SqlFunctions::TestingEfficiencyResult> getTestingEfficiency(
+        const std::optional<int>& projectId,
+        const std::optional<std::string>& from,
+        const std::optional<std::string>& to
+    );
+
+    std::vector<lib::SqlFunctions::EmployeeWorkloadResult> getEmployeeWorkload();
+    std::vector<lib::SqlFunctions::EmployeeWorkloadResult> getEmployeeWorkload(
+        const std::optional<std::vector<int>>& employeeIds,
+        const std::optional<std::vector<int>>& projectIds,
+        const std::optional<std::string>& from,
+        const std::optional<std::string>& to
+    );
+
+    std::vector<lib::SqlFunctions::ClientActivityResult> getClientActivity();
+    std::vector<lib::SqlFunctions::ClientActivityResult> getClientActivity(
+        const std::optional<std::string>& from,
+        const std::optional<std::string>& to
+    );
+
+    std::vector<lib::SqlFunctions::ReleaseReportResult> getReleaseReport();
+    std::vector<lib::SqlFunctions::ReleaseReportResult> getReleaseReport(
+        const std::optional<std::string>& from,
+        const std::optional<std::string>& to
+    );
+
+    std::vector<lib::SqlFunctions::MonthlyFinancialReportResult> getMonthlyFinancialReport(int month, int year);
+
+    std::vector<lib::SqlFunctions::ProjectStatusReportResult> getProjectStatusReport(
+        int projectId,
+        const std::string& startDate,
+        const std::string& endDate
+    );
+
+
 
     ~DataBase();
 
