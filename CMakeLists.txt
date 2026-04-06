@@ -16,6 +16,8 @@ qt_add_executable(Kurvot
     src/main.cpp
     src/Models/ButtonFilterModel.hpp
     src/Models/ButtonFilterModel.cpp
+    src/Models/EmployeesTableModel.hpp
+    src/Models/EmployeesTableModel.cpp
 )
 
 set_target_properties(Kurvot PROPERTIES
@@ -32,7 +34,7 @@ qt_add_qml_module(Kurvot
         src/Qml/MainWidget.qml
         src/Qml/FilterDelegate.qml
         src/Qml/Sidebar.qml
-        src/Qml/Employeers.qml
+        src/Qml/Employees.qml
         src/Qml/Sales.qml
         src/Qml/Documents.qml
         src/Qml/TestingAndBug.qml

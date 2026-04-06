@@ -3,6 +3,7 @@ import QtQuick
 Rectangle {
     id: tile
     anchors.fill: parent
+
     color: "pink"
 
     radius: 15

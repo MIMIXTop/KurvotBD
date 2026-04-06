@@ -3,6 +3,7 @@
 #include <QQmlContext>
 
 #include "Models/ButtonFilterModel.hpp"
+#include "Models/EmployeesTableModel.hpp"
 
 int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
@@ -11,6 +12,11 @@ int main(int argc, char** argv) {
 
     ButtonFilterModel filterModel;
     engine.rootContext()->setContextProperty("filterModel", &filterModel);
+
+    EmployeesTableModel employeesTableModel;
+    engine.rootContext()->setContextProperty("employeesTableModel", &employeesTableModel);
+
+    qmlRegisterType<EmployeesTableModel>("Kurvot.Models", 1, 0, "EmployeesTableModel");
 
     QObject::connect(
         &engine,
