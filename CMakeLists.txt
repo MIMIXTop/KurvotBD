@@ -1,14 +1,10 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 project(Kurvot)
 
 include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTORCC ON)
 
 FetchContent_Declare(
         googletest
@@ -20,12 +16,34 @@ FetchContent_MakeAvailable(googletest)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick Gui Widgets)
 
-qt_add_executable(Kurvot src/main.cpp)
+qt_policy(SET QTP0001 NEW)
+qt_policy(SET QTP0004 NEW)
+
+qt_add_executable(Kurvot
+    src/main.cpp
+    src/Models/ButtonFilterModel.hpp
+    src/Models/ButtonFilterModel.cpp
+)
+
+set_target_properties(Kurvot PROPERTIES
+    AUTOMOC ON
+    AUTOUIC ON
+    AUTORCC ON
+)
 
 qt_add_qml_module(Kurvot
     URI Kurvot_URI
+    VERSION 1.0
     QML_FILES
-        src/Main.qml
+        src/Qml/Main.qml
+        src/Qml/MainWidget.qml
+        src/Qml/FilterDelegate.qml
+        src/Qml/Sidebar.qml
+        src/Qml/Employeers.qml
+        src/Qml/Sales.qml
+        src/Qml/Documents.qml
+        src/Qml/TestingAndBug.qml
+        src/Qml/ProjectsAndClients.qml
 )
 
 add_subdirectory(lib)

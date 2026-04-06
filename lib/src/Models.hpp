@@ -272,5 +272,14 @@ namespace lib::Models {
         std::string created_at;
     };
 
-    using Model = std::variant<Department, Position, Client, Employee, SoftwareLicense, DeveloperSpecialization, TesterSpecialization, ManagerCertification, Project, ProjectPhase, ProjectAssignment, LicenseAllocation, CloudResource, WorkLog, Bug, Release, Documentation>;
+    struct ProjectSpecification {
+        int id;
+        int project_id;
+        std::string text;
+        int version;
+        std::string created_at;
+        int updated_by;
+    };
+
+    using Model = std::variant<Department, Position, Client, Employee, SoftwareLicense, DeveloperSpecialization, TesterSpecialization, ManagerCertification, Project, ProjectPhase, ProjectAssignment, LicenseAllocation, CloudResource, WorkLog, Bug, Release, Documentation, ProjectSpecification>;
 }

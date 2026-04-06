@@ -1,28 +1,43 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
 Rectangle {
     id: root
-    color: "lightblue"
-    property alias model: listView.model
+    color: "#2c3e50"
 
-    signal filterSelected(int selectedIndex)
+    property alias model: listView.model
+    signal sectionSelected(int index)
 
     ListView {
         id: listView
         anchors.fill: parent
-        spacing: 10
+        spacing: 0
         clip: true
 
-        topMargin: 15
-        bottomMargin: 15
-        leftMargin: 15
-        rightMargin: 15
+        delegate: Rectangle {
+            width: ListView.view.width
+            height: 60
+            color: mouseArea.containsMouse ? "#34495e" : "transparent"
 
-        delegate: FilterDelegate {
-            title: model.name
+            Text {
+                anchors.fill: parent
+                anchors.leftMargin: 20
+                anchors.rightMargin: 20
+                text: model.name
+                color: "white"
+                font.pixelSize: 16
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignLeft
+                elide: Text.ElideRight
+            }
 
-            onClicked: root.filterSelected(index)
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: root.sectionSelected(index)
+            }
         }
     }
 }

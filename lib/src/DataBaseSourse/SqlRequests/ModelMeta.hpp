@@ -842,6 +842,48 @@ namespace lib::Meta {
         }
     };
 
+    template<>
+    struct ModelMeta<Models::ProjectSpecification> {
+      struct Query {
+          static constexpr std::string_view insert =
+              "INSERT INTO ProjectSpecification (project_id, document_text, version) VALUE ($1, $2, $3)";
+
+          static constexpr std::string_view selectById =
+              "SELECT * FROM ProjectSpecification WHERE spec_id = $1";
+
+          static constexpr std::string_view deleteById =
+              "DELETE FROM ProjectSpecification WHERE spec_id = $1";
+
+          static constexpr std::string_view selectAll =
+              "SELECT * FROM ProjectSpecification";
+
+          static constexpr std::string_view updateById =
+              "UPDATE ProjectSpecification SET project_id = $1, version = $2, project_date = $3 WHERE spec_id = $4";
+      };
+
+        static auto extract(const Models::ProjectSpecification &m) {
+            return std::make_tuple(
+                Converters::toParams(m.id),
+                Converters::toParams(m.project_id),
+                Converters::toParams(m.text),
+                Converters::toParams(m.version),
+                Converters::toParams(m.created_at),
+                Converters::toParams(m.updated_by)
+                );
+        }
+
+        static Models::ProjectSpecification fromRow(const pqxx::row &row) {
+            return Models::ProjectSpecification{
+                .id = row["spec_id"].as<int>(),
+                .project_id = row["project_id"].as<int>(),
+                .text = row["document_text"].as<std::string>(),
+                .version = row["version"].as<int>(),
+                .created_at = row["created_at"].as<std::string>(),
+                .updated_by = row["updated_by"].as<int>(),
+            };
+        }
+    };
+
     // ─── Documentation ────────────────────────────────────────────
     template<>
     struct ModelMeta<Models::Documentation> {

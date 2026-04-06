@@ -165,6 +165,16 @@ CREATE TABLE CloudResource
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE ProjectSpecification
+(
+    spec_id       SERIAL PRIMARY KEY,
+    project_id    INTEGER NOT NULL REFERENCES Project (project_id) ON DELETE CASCADE,
+    document_text TEXT NOT NULL,
+    version       INTEGER NOT NULL DEFAULT 1,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by    INTEGER REFERENCES Employee (employee_id) ON DELETE SET NULL -- кто инициировал/изменил
+);
+
 CREATE TABLE WorkLog
 (
     log_id           SERIAL PRIMARY KEY,

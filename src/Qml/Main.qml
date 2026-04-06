@@ -8,16 +8,13 @@ Window {
     visible: true
     title: "Kurvot"
 
-    // Создаем свойство на уровне окна для хранения индекса.
-    // -1 означает, что ничего не выбрано
+
     property int currentSelectedIndex: -1
     property int currentFilterType: -1
 
-    // Слушаем сигнал из вашего C++ класса ButtonFilterModel
     Connections {
-        target: filterModel // Убедитесь, что объект в main.cpp зарегистрирован именно под этим именем
+        target: filterModel
 
-        // Название функции формируется как "on" + название сигнала с большой буквы
         function onFilterSelected(filterType) {
             // Сохраняем filterType, который прислал C++
             currentFilterType = filterType
@@ -32,12 +29,11 @@ Window {
 
         Sidebar {
             id: sidebar
+            model: filterModel
             Layout.preferredWidth: 300
             Layout.fillHeight: true
 
-            model: filterModel
-
-            onFilterSelected: function(selectedIndex) {
+            onSectionSelected: function(selectedIndex) {
                 // 1. Сохраняем индекс строки для QML-интерфейса
                 currentSelectedIndex = selectedIndex
 
@@ -46,33 +42,60 @@ Window {
             }
         }
 
-        Rectangle {
-            id: mainContent
+        StackLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            color: "#f0f0f0"
 
-            Column {
-                anchors.centerIn: parent
-                spacing: 20
+            currentIndex: currentSelectedIndex
+            
+            Employeers {
+                id : employee
+            }
 
-                Text {
-                    text: currentSelectedIndex === -1
-                        ? "Выберите фильтр в меню слева"
-                        : "Нажат индекс (строка): " + currentSelectedIndex
+            ProjectsAndClients {
+                id: projectAndClient
+            }
 
-                    font.pixelSize: 28
-                    font.bold: true
-                    color: currentSelectedIndex === -1 ? "gray" : "#333333"
-                }
+            TestingAndBug {
+                id: testingAndBug
+            }
 
-                Text {
-                    visible: currentSelectedIndex !== -1
-                    text: "ID фильтра (из C++ enum): " + currentFilterType
-                    font.pixelSize: 20
-                    color: "indianred"
-                }
+            Sales {
+                id: sales
+            }
+
+            Documents {
+                id: documents
             }
         }
+
+        // Rectangle {
+        //     id: mainContent
+        //     Layout.fillWidth: true
+        //     Layout.fillHeight: true
+        //     color: "#f0f0f0"
+        //
+        //     Column {
+        //         anchors.centerIn: parent
+        //         spacing: 20
+        //
+        //         Text {
+        //             text: currentSelectedIndex === -1
+        //                 ? "Выберите фильтр в меню слева"
+        //                 : "Нажат индекс (строка): " + currentSelectedIndex
+        //
+        //             font.pixelSize: 28
+        //             font.bold: true
+        //             color: currentSelectedIndex === -1 ? "gray" : "#333333"
+        //         }
+        //
+        //         Text {
+        //             visible: currentSelectedIndex !== -1
+        //             text: "ID фильтра (из C++ enum): " + currentFilterType
+        //             font.pixelSize: 20
+        //             color: "indianred"
+        //         }
+        //     }
+        // }
     }
 }

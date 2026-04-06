@@ -7,6 +7,7 @@ CREATE OR REPLACE FUNCTION get_employee_by_filters(
     p_max_age INT DEFAULT NULL,
     p_min_salary DECIMAL(10, 2) DEFAULT NULL,
     p_max_salary DECIMAL(10, 2) DEFAULT NULL,
+    p_cert_type VARCHAR DEFAULT NULL,
     p_is_active BOOLEAN DEFAULT TRUE)
     RETURNS TABLE
             (
@@ -21,7 +22,9 @@ CREATE OR REPLACE FUNCTION get_employee_by_filters(
                 experience_years INT,
                 salary           DECIMAL(10, 2),
                 email            VARCHAR(100),
-                phone            VARCHAR(20)
+                phone            VARCHAR(20),
+                cert_type        VARCHAR(100),
+                cert_issue_date  DATE
             )
     LANGUAGE plpgsql
 AS
@@ -39,10 +42,14 @@ BEGIN
                EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.hire_date))::INT  AS experience_years,
                e.salary,
                e.email,
-               e.phone
+               e.phone,
+               mc.cert_type,
+               mc.issue_date
         FROM Employee e
                  JOIN Department d ON e.department_id = d.department_id
                  JOIN Position p ON e.position_id = p.position_id
+                 LEFT JOIN ManagerCertification mc ON e.employee_id = mc.employee_id
+                    AND (p_cert_type IS NULL OR mc.cert_type ILIKE '%' || p_cert_type || '%')
         WHERE (p_is_active IS NULL OR e.is_active = p_is_active)
 
           AND (p_department_ids IS NULL OR e.department_id = ANY (p_department_ids))
@@ -55,6 +62,7 @@ BEGIN
           AND (p_max_age IS NULL OR EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.birth_date))::INT <= p_max_age)
           AND (p_min_salary IS NULL OR e.salary >= p_min_salary)
           AND (p_max_salary IS NULL OR e.salary <= p_max_salary)
+          AND (p_cert_type IS NULL OR mc.employee_id IS NOT NULL)
 
         ORDER BY d.name, e.last_name, e.first_name;
 END;

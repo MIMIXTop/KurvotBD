@@ -8,4 +8,3 @@ namespace lib::Constants {
             "AND table_type = 'BASE TABLE' "
             "ORDER BY table_name";
 }
-
