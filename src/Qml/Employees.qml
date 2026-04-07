@@ -24,21 +24,22 @@ Item {
             }
         }
 
-        ColumnLayout {
+        Item {
             Layout.fillWidth: true
             Layout.leftMargin: 10
             Layout.rightMargin: 10
             Layout.topMargin: 8
             Layout.bottomMargin: 8
-            spacing: 6
 
-            RowLayout {
-                Layout.fillWidth: true
+            Flow {
+                anchors.fill: parent
                 spacing: 10
+                // filter controls – они будут автоматически переноситься в новый ряд, если не помещаются
 
                 ComboBox {
                     id: deptCombo
-                    Layout.preferredWidth: 250
+                    width: 250
+                    height: 32
                     model: [
                         "Все отделы",
                         "Отдел разработки веб-приложений",
@@ -53,28 +54,69 @@ Item {
 
                 TextField {
                     id: positionField
-                    Layout.preferredWidth: 200
+                    width: 200
+                    height: 32
                     placeholderText: "Должность"
                 }
 
                 TextField {
                     id: minExpField
-                    Layout.preferredWidth: 100
+                    width: 100
+                    height: 32
                     placeholderText: "Стаж от"
                     validator: IntValidator { bottom: 0 }
                 }
 
                 TextField {
                     id: maxExpField
-                    Layout.preferredWidth: 100
+                    width: 100
+                    height: 32
                     placeholderText: "Стаж до"
                     validator: IntValidator { bottom: 0 }
                 }
 
-                Item { Layout.fillWidth: true }
+                TextField {
+                    id: minAgeField
+                    width: 100
+                    height: 32
+                    placeholderText: "Возраст от"
+                    validator: IntValidator { bottom: 0; top: 120 }
+                }
+
+                TextField {
+                    id: maxAgeField
+                    width: 100
+                    height: 32
+                    placeholderText: "Возраст до"
+                    validator: IntValidator { bottom: 0; top: 120 }
+                }
+
+                TextField {
+                    id: minSalaryField
+                    width: 120
+                    height: 32
+                    placeholderText: "Зарплата от"
+                    validator: DoubleValidator { bottom: 0 }
+                }
+
+                TextField {
+                    id: maxSalaryField
+                    width: 120
+                    height: 32
+                    placeholderText: "Зарплата до"
+                    validator: DoubleValidator { bottom: 0 }
+                }
+
+                CheckBox {
+                    id: activeCheck
+                    height: 32
+                    text: "Активные"
+                    checked: true
+                }
 
                 Button {
                     text: "Найти"
+                    height: 32
                     onClicked: {
                         let minExp = minExpField.text.length > 0 ? parseInt(minExpField.text) : -1
                         let maxExp = maxExpField.text.length > 0 ? parseInt(maxExpField.text) : -1
@@ -91,47 +133,6 @@ Item {
                         )
                     }
                 }
-            }
-
-            RowLayout {
-                Layout.fillWidth: true
-                spacing: 10
-
-                TextField {
-                    id: minAgeField
-                    Layout.preferredWidth: 100
-                    placeholderText: "Возраст от"
-                    validator: IntValidator { bottom: 0; top: 120 }
-                }
-
-                TextField {
-                    id: maxAgeField
-                    Layout.preferredWidth: 100
-                    placeholderText: "Возраст до"
-                    validator: IntValidator { bottom: 0; top: 120 }
-                }
-
-                TextField {
-                    id: minSalaryField
-                    Layout.preferredWidth: 120
-                    placeholderText: "Зарплата от"
-                    validator: DoubleValidator { bottom: 0 }
-                }
-
-                TextField {
-                    id: maxSalaryField
-                    Layout.preferredWidth: 120
-                    placeholderText: "Зарплата до"
-                    validator: DoubleValidator { bottom: 0 }
-                }
-
-                CheckBox {
-                    id: activeCheck
-                    text: "Активные"
-                    checked: true
-                }
-
-                Item { Layout.fillWidth: true }
             }
         }
 
@@ -150,11 +151,11 @@ Item {
                 anchors.fill: parent
                 currentIndex: bar.currentIndex
 
-                Item {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+        Item { Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.preferredHeight: implicitHeight
 
-                    ColumnLayout {
+            ColumnLayout {
                         anchors.fill: parent
                         spacing: 0
 
