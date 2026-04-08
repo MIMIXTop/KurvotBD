@@ -26,7 +26,7 @@ protected:
                 cloudresource, worklog, bug, release, documentation
                 RESTART IDENTITY CASCADE
         )");
-        // Insert minimal seed data for tests
+
         txn.exec(R"(
             INSERT INTO department (department_id, name, type) VALUES
                 (1, 'Отдел разработки', 'разработка'),
@@ -150,7 +150,7 @@ TEST_F(SqlFunctionsTest, GetEmployeeByFilters_WithDepartment) {
     std::vector<int> deptIds = {1};
     auto results = db->getEmployeeByFilters(
         deptIds, std::nullopt, std::nullopt, std::nullopt,
-        std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt
+        std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt
     );
     for (const auto& r : results) {
         EXPECT_EQ(r.department_id, 1);
@@ -160,7 +160,7 @@ TEST_F(SqlFunctionsTest, GetEmployeeByFilters_WithDepartment) {
 TEST_F(SqlFunctionsTest, GetEmployeeByFilters_WithSalaryRange) {
     auto results = db->getEmployeeByFilters(
         std::nullopt, std::nullopt, std::nullopt, std::nullopt,
-        std::nullopt, std::nullopt, 100000, 200000, std::nullopt
+        std::nullopt, std::nullopt, 100000, 200000, std::nullopt, std::nullopt
     );
     for (const auto& r : results) {
         EXPECT_GE(r.salary, 100000);

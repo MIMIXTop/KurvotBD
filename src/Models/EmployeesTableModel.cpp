@@ -9,16 +9,12 @@
 #include "SqlFunctions.hpp"
 
 EmployeesTableModel::EmployeesTableModel(QObject *parent) : QAbstractTableModel(parent) {
-    employees = {
-        {1, 1, 1, "Иванов Иван Иванович", "Отдел разработки", "Программист", 34, 5, 150000.0, "ivanov@test.ru", "+7(999)123-45-67"},
-        {2, 2, 2, "Петров Петр Петрович", "Отдел тестирования", "Тестировщик", 28, 3, 120000.0, "petrov@test.ru", "+7(999)234-56-78"},
-        {3, 1, 1, "Сидоров Алексей Александрович", "Отдел разработки", "Старший программист", 38, 10, 200000.0, "sidorov@test.ru", "+7(999)345-67-89"},
-        {4, 3, 3, "Козлова Мария Сергеевна", "Отдел техподдержки", "Инженер поддержки", 25, 1, 80000.0, "kozlova@test.ru", "+7(999)456-78-90"},
-        {5, 2, 2, "Смирнов Дмитрий Олегович", "Отдел тестирования", "QA инженер", 30, 4, 110000.0, "smirnov@test.ru", "+7(999)567-89-01"},
-    };
+   database = std::make_shared<DataBase>("host=127.0.0.1 port=5432 dbname=db user=user password=pass");
 
-    database = std::make_shared<DataBase>("host=127.0.0.1 port=5432 dbname=db user=user password=pass");
     updateEmployee();
+    updateDepartmentList();
+    updatePositionList();
+
 }
 
 int EmployeesTableModel::rowCount(const QModelIndex &parent) const {
@@ -35,7 +31,7 @@ QVariant EmployeesTableModel::data(const QModelIndex &index, int role) const {
     if (!index.isValid() || index.row() >= employees.size())
         return QVariant();
 
-    const auto& res = employees.at(index.row());
+    const auto &res = employees.at(index.row());
 
     switch (role) {
         case NameRole: return QString::fromStdString(res.full_name);
@@ -60,6 +56,7 @@ QVariant EmployeesTableModel::data(const QModelIndex &index, int role) const {
     }
     return {};
 }
+
 QHash<int, QByteArray> EmployeesTableModel::roleNames() const {
     return {
         {NameRole, "employeeName"},
@@ -74,33 +71,29 @@ QHash<int, QByteArray> EmployeesTableModel::roleNames() const {
 }
 
 void EmployeesTableModel::updateEmployee() {
-
     auto res = std::async([this] {
         return database->getEmployeeByFilters();
     });
 
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    employees.clear();
     employees = res.get();
     endInsertRows();
-
 }
 
 void EmployeesTableModel::applyFilters(
-    int departmentIndex, const QString& position,
+    int departmentIndex, int position,
     int minExp, int maxExp,
     int minAge, int maxAge,
     double minSalary, double maxSalary,
     bool isActive) {
-
-    std::optional<std::vector<int>> deptIds;
+    std::optional<std::vector<int> > deptIds;
     if (departmentIndex > 0) {
         deptIds = std::vector<int>{departmentIndex};
     }
 
-    std::optional<std::vector<std::string>> posTitles;
-    if (!position.trimmed().isEmpty()) {
-        posTitles = std::vector<std::string>{position.trimmed().toStdString()};
+    std::optional<std::vector<int> > posTitles;
+    if (position > 0) {
+        posTitles = std::vector<int>{position};
     }
 
     std::optional<int> optMinExp = (minExp >= 0) ? std::optional<int>(minExp) : std::nullopt;
@@ -111,12 +104,53 @@ void EmployeesTableModel::applyFilters(
     std::optional<double> optMaxSal = (maxSalary >= 0) ? std::optional<double>(maxSalary) : std::nullopt;
     std::optional<bool> optIsActive = isActive;
 
-    auto res = std::async([this, deptIds, posTitles, optMinExp, optMaxExp, optMinAge, optMaxAge, optMinSal, optMaxSal, optIsActive] {
-        return database->getEmployeeByFilters(deptIds, posTitles, optMinExp, optMaxExp, optMinAge, optMaxAge, optMinSal, optMaxSal, optIsActive);
-    });
+    auto res = std::async(
+        [this, deptIds, posTitles, optMinExp, optMaxExp, optMinAge, optMaxAge, optMinSal, optMaxSal, optIsActive] {
+return database->getEmployeeByFilters(deptIds, posTitles, optMinExp, optMaxExp, optMinAge, optMaxAge,
+                                                   optMinSal, optMaxSal, std::nullopt, optIsActive);
+        });
 
     beginResetModel();
     employees = res.get();
     endResetModel();
+}
 
+void EmployeesTableModel::updateDepartmentList() {
+    m_departmentList = {"Все отделы"};
+
+    auto res = std::async([this] {
+        return database->selectAll(lib::Models::Department{});
+    });
+
+    std::ranges::for_each(res.get(), [this](const lib::Models::Model &m) {
+        std::visit(lib::util::match{
+                       [this](const lib::Models::Department &dep) {
+                           m_departmentList << QString::fromStdString(dep.name);
+                       },
+                       [](auto &&) {
+                       }
+                   }, m);
+    });
+
+    emit departmentListChanged();
+}
+
+void EmployeesTableModel::updatePositionList() {
+    m_positionList = {"Все позиции"};
+
+    auto res = std::async([this] {
+        return database->selectAll(lib::Models::Position{});
+    });
+
+    std::ranges::for_each(res.get(), [this](const lib::Models::Model &m) {
+        std::visit(lib::util::match{
+                       [this](const lib::Models::Position &pos) {
+                           m_positionList << QString::fromStdString(pos.title);
+                       },
+                       [](auto) {
+                       }
+                   }, m);
+    });
+
+    emit positionListChanged();
 }

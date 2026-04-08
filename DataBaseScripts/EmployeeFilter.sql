@@ -1,6 +1,23 @@
+
+DO $$
+BEGIN
+    -- Drop all overloads of get_employee_by_filters
+    DROP FUNCTION IF EXISTS get_employee_by_filters();
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[]);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[]);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL, DECIMAL);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL, DECIMAL, VARCHAR);
+    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL, DECIMAL, VARCHAR, BOOLEAN);
+END $$;
+
 CREATE OR REPLACE FUNCTION get_employee_by_filters(
     p_department_ids INT[] DEFAULT NULL,
-    p_position_titles VARCHAR[] DEFAULT NULL,
+    p_position_ids int[] DEFAULT NULL,
     p_min_experience INT DEFAULT NULL,
     p_max_experience INT DEFAULT NULL,
     p_min_age INT DEFAULT NULL,
@@ -53,9 +70,7 @@ BEGIN
         WHERE (p_is_active IS NULL OR e.is_active = p_is_active)
 
           AND (p_department_ids IS NULL OR e.department_id = ANY (p_department_ids))
-          AND (p_position_titles IS NULL OR EXISTS (SELECT 1
-                                                    FROM unnest(p_position_titles) AS p_title
-                                                    WHERE p.title ILIKE '%' || p_title || '%'))
+          AND (p_position_ids IS NULL OR e.position_id = ANY (p_position_ids))
           AND (p_min_experience IS NULL OR EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.hire_date))::INT >= p_min_experience)
           AND (p_max_experience IS NULL OR EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.hire_date))::INT <= p_max_experience)
           AND (p_min_age IS NULL OR EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.birth_date))::INT >= p_min_age)

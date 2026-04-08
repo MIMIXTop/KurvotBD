@@ -11,6 +11,9 @@ class EmployeesTableModel : public QAbstractTableModel {
 
     Q_OBJECT
 
+    Q_PROPERTY(QStringList departmentList READ departmentList NOTIFY departmentListChanged)
+    Q_PROPERTY(QStringList positionList READ positionList NOTIFY positionListChanged)
+
 public:
     enum EmployeesTableRoles {
         NameRole = Qt::UserRole + 1,
@@ -28,21 +31,34 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
+    QStringList departmentList() const {return m_departmentList;}
+    QStringList positionList() const {return m_positionList;}
+
     Q_INVOKABLE void applyFilters(
-        int departmentIndex, const QString& position,
+        int departmentIndex, int position,
         int minExp, int maxExp,
         int minAge, int maxAge,
         double minSalary, double maxSalary,
         bool isActive);
 
+signals:
+    void departmentListChanged();
+    void positionListChanged();
+
 protected:
     QHash<int, QByteArray> roleNames() const override;
 
+
 private:
 
-    void updateEmployee();
+
 
     std::vector<lib::SqlFunctions::EmployeeFilterResult> employees;
     std::shared_ptr<DataBase> database;
+    QStringList m_departmentList;
+    QStringList m_positionList;
+    void updateDepartmentList();
+    void updateEmployee();
+    void updatePositionList();
 };
 

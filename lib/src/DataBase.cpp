@@ -339,18 +339,19 @@ std::vector<lib::SqlFunctions::ProjectTechnologyResult> DataBase::getProjectTech
 }
 
 std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilters() {
-    return getEmployeeByFilters(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt);
+    return getEmployeeByFilters(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt);
 }
 
 std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilters(
     const std::optional<std::vector<int>>& departmentIds,
-    const std::optional<std::vector<std::string>>& positionTitles,
+    const std::optional<std::vector<int>>& positionTitles,
     const std::optional<int>& minExperience,
     const std::optional<int>& maxExperience,
     const std::optional<int>& minAge,
     const std::optional<int>& maxAge,
     const std::optional<double>& minSalary,
     const std::optional<double>& maxSalary,
+    const std::optional<std::string>& certType,
     const std::optional<bool>& isActive
 ) {
     std::vector<lib::SqlFunctions::EmployeeFilterResult> results;
@@ -361,22 +362,25 @@ std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilt
         bool first = true;
         
         if (departmentIds && !departmentIds->empty()) {
-            sql += "ARRAY[";
+            if (!first) sql += ", ";
+            std::string arr = "ARRAY[";
             for (size_t i = 0; i < departmentIds->size(); ++i) {
-                if (i > 0) sql += ", ";
-                sql += std::to_string((*departmentIds)[i]);
+                if (i > 0) arr += ", ";
+                arr += std::to_string((*departmentIds)[i]);
             }
-            sql += "]";
+            arr += "]";
+            sql += "p_department_ids := " + arr;
             first = false;
         }
         if (positionTitles && !positionTitles->empty()) {
             if (!first) sql += ", ";
-            sql += "ARRAY[";
+            std::string arr = "ARRAY[";
             for (size_t i = 0; i < positionTitles->size(); ++i) {
-                if (i > 0) sql += ", ";
-                sql += txn.quote((*positionTitles)[i]);
+                if (i > 0) arr += ", ";
+                arr += std::to_string((*positionTitles)[i]);
             }
-            sql += "]";
+            arr += "]";
+            sql += "p_position_ids := " + arr;
             first = false;
         }
         if (minExperience) {
@@ -409,10 +413,17 @@ std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilt
             sql += "p_max_salary := " + std::to_string(*maxSalary);
             first = false;
         }
-        if (isActive) {
+        if (certType) {
             if (!first) sql += ", ";
-            sql += "p_is_active := " + std::string(*isActive ? "TRUE" : "FALSE");
+            sql += "p_cert_type := " + txn.quote(*certType);
+            first = false;
         }
+        if (first) {
+            sql += "p_is_active := ";
+        } else {
+            sql += ", p_is_active := ";
+        }
+        sql += std::string((isActive && *isActive) ? "TRUE" : "FALSE");
         
         sql += ")";
         

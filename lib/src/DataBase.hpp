@@ -60,13 +60,14 @@ public:
     std::vector<lib::SqlFunctions::EmployeeFilterResult> getEmployeeByFilters();
     std::vector<lib::SqlFunctions::EmployeeFilterResult> getEmployeeByFilters(
         const std::optional<std::vector<int>>& departmentIds,
-        const std::optional<std::vector<std::string>>& positionTitles,
+        const std::optional<std::vector<int>>& positionTitles,
         const std::optional<int>& minExperience,
         const std::optional<int>& maxExperience,
         const std::optional<int>& minAge,
         const std::optional<int>& maxAge,
         const std::optional<double>& minSalary,
         const std::optional<double>& maxSalary,
+        const std::optional<std::string>& certType,
         const std::optional<bool>& isActive
     );
 
