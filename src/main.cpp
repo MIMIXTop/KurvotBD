@@ -4,6 +4,7 @@
 
 #include "Models/ButtonFilterModel.hpp"
 #include "Models/EmployeesTableModel.hpp"
+#include "Models/EmployeesWorkloadModel.hpp"
 
 int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
@@ -16,7 +17,11 @@ int main(int argc, char** argv) {
     EmployeesTableModel employeesTableModel;
     engine.rootContext()->setContextProperty("employeesTableModel", &employeesTableModel);
 
+    EmployeesWorkloadModel workloadModel;
+    engine.rootContext()->setContextProperty("workloadModel", &workloadModel);
+
     qmlRegisterType<EmployeesTableModel>("Kurvot.Models", 1, 0, "EmployeesTableModel");
+    qmlRegisterType<EmployeesWorkloadModel>("Kurvot.Models", 1, 0, "EmployeesWorkloadModel");
 
     QObject::connect(
         &engine,

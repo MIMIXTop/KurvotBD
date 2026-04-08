@@ -661,7 +661,8 @@ std::vector<lib::SqlFunctions::EmployeeWorkloadResult> DataBase::getEmployeeWork
         bool first = true;
         
         if (employeeIds && !employeeIds->empty()) {
-            sql += "ARRAY[";
+            if (!first) sql += ", ";
+            sql += "p_employee_ids := ARRAY[";
             for (size_t i = 0; i < employeeIds->size(); ++i) {
                 if (i > 0) sql += ", ";
                 sql += std::to_string((*employeeIds)[i]);
@@ -671,7 +672,7 @@ std::vector<lib::SqlFunctions::EmployeeWorkloadResult> DataBase::getEmployeeWork
         }
         if (projectIds && !projectIds->empty()) {
             if (!first) sql += ", ";
-            sql += "ARRAY[";
+            sql += "p_project_ids := ARRAY[";
             for (size_t i = 0; i < projectIds->size(); ++i) {
                 if (i > 0) sql += ", ";
                 sql += std::to_string((*projectIds)[i]);
@@ -690,6 +691,8 @@ std::vector<lib::SqlFunctions::EmployeeWorkloadResult> DataBase::getEmployeeWork
         }
         
         sql += ")";
+
+        std::println(std::cout, "{}",sql);
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
@@ -765,12 +768,12 @@ std::vector<lib::SqlFunctions::ReleaseReportResult> DataBase::getReleaseReport(
         
         bool first = true;
         if (from) {
-            sql += txn.quote(*from);
+            sql += "p_from := " + txn.quote(*from);
             first = false;
         }
         if (to) {
             if (!first) sql += ", ";
-            sql += txn.quote(*to);
+            sql += "p_to := " + txn.quote(*to);
         }
         
         sql += ")";
@@ -795,7 +798,7 @@ std::vector<lib::SqlFunctions::MonthlyFinancialReportResult> DataBase::getMonthl
     std::vector<lib::SqlFunctions::MonthlyFinancialReportResult> results;
     try {
         pqxx::work txn(connection);
-        std::string sql = "SELECT * FROM get_monthly_financial_report(" + std::to_string(month) + ", " + std::to_string(year) + ")";
+        std::string sql = "SELECT * FROM get_monthly_financial_report(p_month := " + std::to_string(month) + ", p_year := " + std::to_string(year) + ")";
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
@@ -822,8 +825,8 @@ std::vector<lib::SqlFunctions::ProjectStatusReportResult> DataBase::getProjectSt
     std::vector<lib::SqlFunctions::ProjectStatusReportResult> results;
     try {
         pqxx::work txn(connection);
-        std::string sql = "SELECT * FROM get_project_status_report(" + std::to_string(projectId) + 
-                          ", " + txn.quote(startDate) + ", " + txn.quote(endDate) + ")";
+        std::string sql = "SELECT * FROM get_project_status_report(p_project_id := " + std::to_string(projectId) + 
+                          ", p_start_date := " + txn.quote(startDate) + ", p_end_date := " + txn.quote(endDate) + ")";
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {

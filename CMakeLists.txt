@@ -4,7 +4,6 @@ project(Kurvot)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Use system-installed GoogleTest
 find_package(GTest REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick Gui Widgets)
@@ -18,6 +17,8 @@ qt_add_executable(Kurvot
     src/Models/ButtonFilterModel.cpp
     src/Models/EmployeesTableModel.hpp
     src/Models/EmployeesTableModel.cpp
+    src/Models/EmployeesWorkloadModel.hpp
+    src/Models/EmployeesWorkloadModel.cpp
 )
 
 set_target_properties(Kurvot PROPERTIES
