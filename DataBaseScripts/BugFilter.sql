@@ -12,11 +12,11 @@ returns table (
     description text,
     status varchar(50),
     severity varchar(50),
-    found_by integer,
-    fixed_by integer,
-    created_at TIMESTAMP,
-    found_date date,
-    fixed_date date,
+    found_by_name text,
+    fixed_by_name text,
+    created_at text,
+    found_date text,
+    fixed_date text,
     total_count bigint
 ) LANGUAGE plpgsql
 AS $$
@@ -29,14 +29,16 @@ begin
         b.description,
         b.status,
         b.severity,
-        b.found_by,
-        b.fixed_by,
-        b.created_at,
-        b.found_date,
-        b.fixed_date,
+        COALESCE(e_found.last_name || ' ' || e_found.first_name || COALESCE(' ' || e_found.patronymic, ''), '') as found_by_name,
+        COALESCE(e_fixed.last_name || ' ' || e_fixed.first_name || COALESCE(' ' || e_fixed.patronymic, ''), '') as fixed_by_name,
+        TO_CHAR(b.created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
+        TO_CHAR(b.found_date, 'YYYY-MM-DD') as found_date,
+        COALESCE(TO_CHAR(b.fixed_date, 'YYYY-MM-DD'), '') as fixed_date,
         COUNT(*) OVER() as total_count
     from bug b
     join project p on b.project_id = p.project_id
+    left join employee e_found on b.found_by = e_found.employee_id
+    left join employee e_fixed on b.fixed_by = e_fixed.employee_id
     where
         (p_project_id is null or b.project_id = p_project_id)
     and (p_bug_status is null or b.status = any(p_bug_status))

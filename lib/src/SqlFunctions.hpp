@@ -53,7 +53,7 @@ struct EmployeeFilterResult {
     std::string position_title;
     int age;
     int experience_years;
-    double salary;
+    float salary;
     std::string email;
     std::string phone;
 };
@@ -80,8 +80,8 @@ struct BugFilterResult {
     std::string description;
     std::string status;
     std::string severity;
-    int found_by;
-    int fixed_by;
+    std::string found_by_name;
+    std::string fixed_by_name;
     std::string created_at;
     std::string found_date;
     std::string fixed_date;
@@ -109,6 +109,8 @@ struct ClientActivityResult {
     std::string client_name;
     int64_t active_projects;
     double total_spend;
+    std::string earliest_project_date;
+    std::string latest_project_date;
 };
 
 struct ReleaseReportResult {

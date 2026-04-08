@@ -19,6 +19,16 @@ qt_add_executable(Kurvot
     src/Models/EmployeesTableModel.cpp
     src/Models/EmployeesWorkloadModel.hpp
     src/Models/EmployeesWorkloadModel.cpp
+    src/Models/ProjectsTableModel.hpp
+    src/Models/ProjectsTableModel.cpp
+    src/Models/ClientsTableModel.hpp
+    src/Models/ClientsTableModel.cpp
+    src/Models/BugsTableModel.hpp
+    src/Models/BugsTableModel.cpp
+    src/Models/ReleasesTableModel.hpp
+    src/Models/ReleasesTableModel.cpp
+    src/Models/TestingEfficiencyTableModel.hpp
+    src/Models/TestingEfficiencyTableModel.cpp
 )
 
 set_target_properties(Kurvot PROPERTIES

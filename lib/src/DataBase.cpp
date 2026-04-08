@@ -183,6 +183,8 @@ std::vector<lib::SqlFunctions::ProjectFilterResult> DataBase::getProjectsByFilte
         
         sql += ")";
         
+        std::println(std::cout, "{}", sql);
+        
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
             lib::SqlFunctions::ProjectFilterResult r;
@@ -238,6 +240,8 @@ std::vector<lib::SqlFunctions::ProjectProfitabilityResult> DataBase::getProjectP
         
         sql += ")";
         
+        std::println(std::cout, "{}", sql);
+        
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
             lib::SqlFunctions::ProjectProfitabilityResult r;
@@ -279,6 +283,8 @@ std::vector<lib::SqlFunctions::InfrastructureReportResult> DataBase::getInfrastr
         }
         
         sql += ")";
+        
+        std::println(std::cout, "{}", sql);
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
@@ -323,6 +329,8 @@ std::vector<lib::SqlFunctions::ProjectTechnologyResult> DataBase::getProjectTech
         }
         
         sql += ")";
+        
+        std::println(std::cout, "{}", sql);
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
@@ -427,6 +435,8 @@ std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilt
         
         sql += ")";
         
+        std::println(std::cout, "{}", sql);
+        
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
             lib::SqlFunctions::EmployeeFilterResult r;
@@ -493,6 +503,8 @@ std::vector<lib::SqlFunctions::ProjectTeamResult> DataBase::getProjectTeam(
         
         sql += ")";
         
+        std::println(std::cout, "{}", sql);
+        
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
             lib::SqlFunctions::ProjectTeamResult r;
@@ -536,12 +548,12 @@ std::vector<lib::SqlFunctions::BugFilterResult> DataBase::getBugsByFilter(
         bool first = true;
         
         if (projectId) {
-            sql += std::to_string(*projectId);
+            sql += "p_project_id := " + std::to_string(*projectId);
             first = false;
         }
         if (bugStatus && !bugStatus->empty()) {
             if (!first) sql += ", ";
-            sql += "ARRAY[";
+            sql += "p_bug_status := ARRAY[";
             for (size_t i = 0; i < bugStatus->size(); ++i) {
                 if (i > 0) sql += ", ";
                 sql += txn.quote((*bugStatus)[i]);
@@ -551,7 +563,7 @@ std::vector<lib::SqlFunctions::BugFilterResult> DataBase::getBugsByFilter(
         }
         if (bugSeverity && !bugSeverity->empty()) {
             if (!first) sql += ", ";
-            sql += "ARRAY[";
+            sql += "p_bug_severity := ARRAY[";
             for (size_t i = 0; i < bugSeverity->size(); ++i) {
                 if (i > 0) sql += ", ";
                 sql += txn.quote((*bugSeverity)[i]);
@@ -571,6 +583,8 @@ std::vector<lib::SqlFunctions::BugFilterResult> DataBase::getBugsByFilter(
         
         sql += ")";
         
+        std::println(std::cout, "{}", sql);
+        
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
             lib::SqlFunctions::BugFilterResult r;
@@ -580,11 +594,11 @@ std::vector<lib::SqlFunctions::BugFilterResult> DataBase::getBugsByFilter(
             r.description = row["description"].as<std::string>();
             r.status = row["status"].as<std::string>();
             r.severity = row["severity"].as<std::string>();
-            r.found_by = row["found_by"].is_null() ? 0 : row["found_by"].as<int>();
-            r.fixed_by = row["fixed_by"].is_null() ? 0 : row["fixed_by"].as<int>();
+            r.found_by_name = row["found_by_name"].as<std::string>();
+            r.fixed_by_name = row["fixed_by_name"].as<std::string>();
             r.created_at = row["created_at"].as<std::string>();
             r.found_date = row["found_date"].as<std::string>();
-            r.fixed_date = row["fixed_date"].is_null() ? "" : row["fixed_date"].as<std::string>();
+            r.fixed_date = row["fixed_date"].as<std::string>();
             r.total_count = row["total_count"].as<int64_t>();
             results.push_back(r);
         }
@@ -612,7 +626,7 @@ std::vector<lib::SqlFunctions::TestingEfficiencyResult> DataBase::getTestingEffi
         bool first = true;
         
         if (projectId) {
-            sql += std::to_string(*projectId);
+            sql += "p_project_id := " + std::to_string(*projectId);
             first = false;
         }
         if (from) {
@@ -626,6 +640,8 @@ std::vector<lib::SqlFunctions::TestingEfficiencyResult> DataBase::getTestingEffi
         }
         
         sql += ")";
+        
+        std::println(std::cout, "{}", sql);
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
@@ -665,7 +681,7 @@ std::vector<lib::SqlFunctions::EmployeeWorkloadResult> DataBase::getEmployeeWork
             sql += "p_employee_ids := ARRAY[";
             for (size_t i = 0; i < employeeIds->size(); ++i) {
                 if (i > 0) sql += ", ";
-                sql += std::to_string((*employeeIds)[i]);
+                sql += std::to_string((*employeeIds)[i] + 1);
             }
             sql += "]";
             first = false;
@@ -675,7 +691,7 @@ std::vector<lib::SqlFunctions::EmployeeWorkloadResult> DataBase::getEmployeeWork
             sql += "p_project_ids := ARRAY[";
             for (size_t i = 0; i < projectIds->size(); ++i) {
                 if (i > 0) sql += ", ";
-                sql += std::to_string((*projectIds)[i]);
+                sql += std::to_string((*projectIds)[i] + 1);
             }
             sql += "]";
             first = false;
@@ -727,15 +743,17 @@ std::vector<lib::SqlFunctions::ClientActivityResult> DataBase::getClientActivity
         
         bool first = true;
         if (from) {
-            sql += txn.quote(*from);
+            sql += "p_from := " + txn.quote(*from);
             first = false;
         }
         if (to) {
             if (!first) sql += ", ";
-            sql += txn.quote(*to);
+            sql += "p_to := " + txn.quote(*to);
         }
         
         sql += ")";
+        
+        std::println(std::cout, "{}", sql);
         
         pqxx::result res = txn.exec(sql);
         for (auto&& row : res) {
@@ -744,6 +762,8 @@ std::vector<lib::SqlFunctions::ClientActivityResult> DataBase::getClientActivity
             r.client_name = row["client_name"].as<std::string>();
             r.active_projects = row["active_projects"].as<int64_t>();
             r.total_spend = row["total_spend"].is_null() ? 0.0 : row["total_spend"].as<double>();
+            r.earliest_project_date = row["earliest_project_date"].is_null() ? "" : row["earliest_project_date"].as<std::string>();
+            r.latest_project_date = row["latest_project_date"].is_null() ? "" : row["latest_project_date"].as<std::string>();
             results.push_back(r);
         }
         txn.commit();

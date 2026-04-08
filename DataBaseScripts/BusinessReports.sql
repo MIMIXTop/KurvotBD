@@ -7,7 +7,9 @@ CREATE OR REPLACE FUNCTION get_client_activity(
         client_id INT,
         client_name VARCHAR(200),
         active_projects BIGINT,
-        total_spend DECIMAL(15, 2)
+        total_spend DECIMAL(15, 2),
+        earliest_project_date DATE,
+        latest_project_date DATE
     )
     LANGUAGE plpgsql
 AS $$
@@ -17,7 +19,9 @@ BEGIN
             c.client_id,
             c.name,
             COUNT(p.project_id) FILTER (WHERE p.status = 'в_разработке') AS active_projects,
-            SUM(p.budget) AS total_spend
+            SUM(p.budget) AS total_spend,
+            MIN(p.start_date) AS earliest_project_date,
+            MAX(p.start_date) AS latest_project_date
         FROM Client c
                  LEFT JOIN Project p ON c.client_id = p.client_id
         WHERE (p_from IS NULL OR p.start_date >= p_from)
