@@ -1,20 +1,3 @@
-
-DO $$
-BEGIN
-    -- Drop all overloads of get_employee_by_filters
-    DROP FUNCTION IF EXISTS get_employee_by_filters();
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[]);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[]);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL, DECIMAL);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL, DECIMAL, VARCHAR);
-    DROP FUNCTION IF EXISTS get_employee_by_filters(INT[], INT[], INT, INT, INT, INT, DECIMAL, DECIMAL, VARCHAR, BOOLEAN);
-END $$;
-
 CREATE OR REPLACE FUNCTION get_employee_by_filters(
     p_department_ids INT[] DEFAULT NULL,
     p_position_ids int[] DEFAULT NULL,

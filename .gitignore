@@ -39,3 +39,10 @@
 
 # debug information files
 *.dwo
+/build
+/.idea
+/.vscode
+/cmake-build-*/
+/.qtcreator
+Interface.md
+/DataBaseScripts/.idea

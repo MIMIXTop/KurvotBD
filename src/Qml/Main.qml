@@ -7,6 +7,7 @@ Window {
     height: Screen.desktopAvailableHeight
     visible: true
     title: "Kurvot"
+    visibility: Window.Maximized
 
 
     property int currentSelectedIndex: -1
@@ -16,7 +17,6 @@ Window {
         target: filterModel
 
         function onFilterSelected(filterType) {
-            // Сохраняем filterType, который прислал C++
             currentFilterType = filterType
             console.log("C++ принял нажатие! Тип фильтра (enum):", filterType)
         }
@@ -34,10 +34,8 @@ Window {
             Layout.fillHeight: true
 
             onSectionSelected: function(selectedIndex) {
-                // 1. Сохраняем индекс строки для QML-интерфейса
                 currentSelectedIndex = selectedIndex
 
-                // 2. Отправляем индекс в C++ (вызов вашего Q_INVOKABLE)
                 filterModel.selectFilter(selectedIndex)
             }
         }
@@ -47,55 +45,22 @@ Window {
             Layout.fillHeight: true
 
             currentIndex: currentSelectedIndex
-            
-            Employeers {
+
+            Employees {
                 id : employee
             }
 
             ProjectsAndClients {
-                id: projectAndClient
+                id: projectsAndClients
             }
 
             TestingAndBug {
-                id: testingAndBug
+                id: testingAndBugs
             }
 
-            Sales {
-                id: sales
-            }
-
-            Documents {
-                id: documents
+            FinancesAndInfrastructure {
+                id: financesAndInfrastructure
             }
         }
-
-        // Rectangle {
-        //     id: mainContent
-        //     Layout.fillWidth: true
-        //     Layout.fillHeight: true
-        //     color: "#f0f0f0"
-        //
-        //     Column {
-        //         anchors.centerIn: parent
-        //         spacing: 20
-        //
-        //         Text {
-        //             text: currentSelectedIndex === -1
-        //                 ? "Выберите фильтр в меню слева"
-        //                 : "Нажат индекс (строка): " + currentSelectedIndex
-        //
-        //             font.pixelSize: 28
-        //             font.bold: true
-        //             color: currentSelectedIndex === -1 ? "gray" : "#333333"
-        //         }
-        //
-        //         Text {
-        //             visible: currentSelectedIndex !== -1
-        //             text: "ID фильтра (из C++ enum): " + currentFilterType
-        //             font.pixelSize: 20
-        //             color: "indianred"
-        //         }
-        //     }
-        // }
     }
 }

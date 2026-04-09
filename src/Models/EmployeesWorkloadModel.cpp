@@ -6,7 +6,7 @@
 
 EmployeesWorkloadModel::EmployeesWorkloadModel(QObject *parent)
     : QAbstractTableModel(parent)
-    , database(std::make_shared<DataBase>("postgresql://postgres:1234@localhost:5432/postgres"))
+    , database(std::make_shared<DataBase>("host=127.0.0.1 port=5432 dbname=db user=user password=pass"))
 {
     updateEmployeeList();
     updateProjectList();

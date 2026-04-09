@@ -153,7 +153,7 @@ SELECT * FROM get_employee_by_filters(p_min_salary := 150000);
 SELECT * FROM get_employee_by_filters(p_min_salary := 100000, p_max_salary := 200000);
 
 -- 3.7. Сотрудники по должности "Программист"
-SELECT * FROM get_employee_by_filters(p_position_titles := ARRAY['Программист']);
+SELECT * FROM get_employee_by_filters(p_position_ids := ARRAY[3]);
 
 -- 3.8. Сотрудники с опытом от 5 лет
 SELECT * FROM get_employee_by_filters(p_min_experience := 5);
@@ -215,6 +215,8 @@ SELECT * FROM get_employee_workload(ARRAY[6, 7, 8]);
 
 -- 5.4. Нагрузка по проекту 1
 SELECT * FROM get_employee_workload(p_project_ids := ARRAY[1]);
+
+SELECT * FROM get_employee_workload(p_employee_ids := ARRAY[2]);
 
 -- 5.5. Нагрузка за период
 SELECT * FROM get_employee_workload(p_from := '2024-01-01', p_to := '2024-03-31');
