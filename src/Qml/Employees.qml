@@ -330,7 +330,7 @@ Item {
                                 clip: true
 
                                 columnWidthProvider: function (column) {
-                                    let minWidths = [250, 200, 100, 80];
+                                    let minWidths = [250, 300, 100, 80];
                                     return minWidths[column] || 100;
                                 }
 

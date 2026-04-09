@@ -10,6 +10,9 @@
 #include "Models/BugsTableModel.hpp"
 #include "Models/ReleasesTableModel.hpp"
 #include "Models/TestingEfficiencyTableModel.hpp"
+#include "Models/ProfitabilityTableModel.hpp"
+#include "Models/InfrastructureTableModel.hpp"
+#include "Models/MonthlyFinancialTableModel.hpp"
 
 int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
@@ -40,6 +43,17 @@ int main(int argc, char** argv) {
     TestingEfficiencyTableModel testingEfficiencyModel;
     engine.rootContext()->setContextProperty("testingEfficiencyModel", &testingEfficiencyModel);
 
+    ProfitabilityTableModel profitabilityModel;
+    profitabilityModel.loadAll();
+    engine.rootContext()->setContextProperty("profitabilityModel", &profitabilityModel);
+
+    InfrastructureTableModel infrastructureModel;
+    infrastructureModel.loadAll();
+    engine.rootContext()->setContextProperty("infrastructureModel", &infrastructureModel);
+
+    MonthlyFinancialTableModel monthlyFinancialModel;
+    engine.rootContext()->setContextProperty("monthlyFinancialModel", &monthlyFinancialModel);
+
     qmlRegisterType<EmployeesTableModel>("Kurvot.Models", 1, 0, "EmployeesTableModel");
     qmlRegisterType<EmployeesWorkloadModel>("Kurvot.Models", 1, 0, "EmployeesWorkloadModel");
     qmlRegisterType<ProjectsTableModel>("Kurvot.Models", 1, 0, "ProjectsTableModel");
@@ -47,6 +61,9 @@ int main(int argc, char** argv) {
     qmlRegisterType<BugsTableModel>("Kurvot.Models", 1, 0, "BugsTableModel");
     qmlRegisterType<ReleasesTableModel>("Kurvot.Models", 1, 0, "ReleasesTableModel");
     qmlRegisterType<TestingEfficiencyTableModel>("Kurvot.Models", 1, 0, "TestingEfficiencyTableModel");
+    qmlRegisterType<ProfitabilityTableModel>("Kurvot.Models", 1, 0, "ProfitabilityTableModel");
+    qmlRegisterType<InfrastructureTableModel>("Kurvot.Models", 1, 0, "InfrastructureTableModel");
+    qmlRegisterType<MonthlyFinancialTableModel>("Kurvot.Models", 1, 0, "MonthlyFinancialTableModel");
 
     QObject::connect(
         &engine,

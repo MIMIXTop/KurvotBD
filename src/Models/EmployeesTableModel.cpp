@@ -11,10 +11,9 @@
 EmployeesTableModel::EmployeesTableModel(QObject *parent) : QAbstractTableModel(parent) {
    database = std::make_shared<DataBase>("host=127.0.0.1 port=5432 dbname=db user=user password=pass");
 
-    updateEmployee();
     updateDepartmentList();
     updatePositionList();
-
+    updateEmployee();
 }
 
 int EmployeesTableModel::rowCount(const QModelIndex &parent) const {
@@ -71,13 +70,9 @@ QHash<int, QByteArray> EmployeesTableModel::roleNames() const {
 }
 
 void EmployeesTableModel::updateEmployee() {
-    auto res = std::async([this] {
-        return database->getEmployeeByFilters();
-    });
-
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    employees = res.get();
-    endInsertRows();
+    beginResetModel();
+    employees = database->getEmployeeByFilters();
+    endResetModel();
 }
 
 void EmployeesTableModel::applyFilters(

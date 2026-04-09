@@ -6,7 +6,7 @@
 using namespace lib::Models;
 
 static const std::string connStr =
-    "host=127.0.0.1 port=5432 dbname=db_test user=user password=pass";
+    "host=127.0.0.1 port=5432 dbname=db user=user password=pass";
 
 class DeleteModelTest : public ::testing::Test {
 protected:

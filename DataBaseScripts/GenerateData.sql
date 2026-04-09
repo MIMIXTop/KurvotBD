@@ -619,8 +619,10 @@ FROM LicenseAllocation
 UNION ALL
 SELECT 'CloudResource', COUNT(*)
 FROM CloudResource
+UNION ALL
+SELECT 'ProjectSpecification', count(*)
+FROM projectspecification
 ORDER BY table_name;
-
 
 
 

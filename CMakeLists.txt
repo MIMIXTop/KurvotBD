@@ -29,6 +29,12 @@ qt_add_executable(Kurvot
     src/Models/ReleasesTableModel.cpp
     src/Models/TestingEfficiencyTableModel.hpp
     src/Models/TestingEfficiencyTableModel.cpp
+    src/Models/ProfitabilityTableModel.hpp
+    src/Models/ProfitabilityTableModel.cpp
+    src/Models/InfrastructureTableModel.hpp
+    src/Models/InfrastructureTableModel.cpp
+    src/Models/MonthlyFinancialTableModel.hpp
+    src/Models/MonthlyFinancialTableModel.cpp
 )
 
 set_target_properties(Kurvot PROPERTIES
@@ -50,6 +56,7 @@ qt_add_qml_module(Kurvot
         src/Qml/Documents.qml
         src/Qml/TestingAndBug.qml
         src/Qml/ProjectsAndClients.qml
+        src/Qml/FinancesAndInfrastructure.qml
 )
 
 add_subdirectory(lib)
