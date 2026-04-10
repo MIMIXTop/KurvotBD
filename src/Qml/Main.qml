@@ -61,6 +61,10 @@ Window {
             FinancesAndInfrastructure {
                 id: financesAndInfrastructure
             }
+
+            ReportsAndDocuments {
+                id: reportsAndDocuments
+            }
         }
     }
 }

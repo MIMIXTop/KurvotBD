@@ -35,6 +35,16 @@ qt_add_executable(Kurvot
     src/Models/InfrastructureTableModel.cpp
     src/Models/MonthlyFinancialTableModel.hpp
     src/Models/MonthlyFinancialTableModel.cpp
+    src/Models/ProjectTeamTableModel.hpp
+    src/Models/ProjectTeamTableModel.cpp
+    src/Models/ProjectStatusModel.hpp
+    src/Models/ProjectStatusModel.cpp
+    src/Models/ProjectTechnologiesTableModel.hpp
+    src/Models/ProjectTechnologiesTableModel.cpp
+    src/Models/DocumentationTableModel.hpp
+    src/Models/DocumentationTableModel.cpp
+    src/Models/SpecificationTableModel.hpp
+    src/Models/SpecificationTableModel.cpp
 )
 
 set_target_properties(Kurvot PROPERTIES
@@ -57,6 +67,11 @@ qt_add_qml_module(Kurvot
         src/Qml/TestingAndBug.qml
         src/Qml/ProjectsAndClients.qml
         src/Qml/FinancesAndInfrastructure.qml
+        src/Qml/ReportsAndDocuments.qml
+        src/Qml/TeamReports.qml
+        src/Qml/StatusReports.qml
+        src/Qml/Technologies.qml
+        src/Qml/Documentation.qml
 )
 
 add_subdirectory(lib)

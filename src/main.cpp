@@ -13,6 +13,11 @@
 #include "Models/ProfitabilityTableModel.hpp"
 #include "Models/InfrastructureTableModel.hpp"
 #include "Models/MonthlyFinancialTableModel.hpp"
+#include "Models/ProjectTeamTableModel.hpp"
+#include "Models/ProjectStatusModel.hpp"
+#include "Models/ProjectTechnologiesTableModel.hpp"
+#include "Models/DocumentationTableModel.hpp"
+#include "Models/SpecificationTableModel.hpp"
 
 int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
@@ -54,6 +59,25 @@ int main(int argc, char** argv) {
     MonthlyFinancialTableModel monthlyFinancialModel;
     engine.rootContext()->setContextProperty("monthlyFinancialModel", &monthlyFinancialModel);
 
+    ProjectTeamTableModel projectTeamModel;
+    projectTeamModel.loadAll();
+    engine.rootContext()->setContextProperty("projectTeamModel", &projectTeamModel);
+
+    ProjectStatusModel projectStatusModel;
+    engine.rootContext()->setContextProperty("projectStatusModel", &projectStatusModel);
+
+    ProjectTechnologiesTableModel technologiesModel;
+    technologiesModel.loadAll();
+    engine.rootContext()->setContextProperty("technologiesModel", &technologiesModel);
+
+    DocumentationTableModel documentationModel;
+    documentationModel.loadAll();
+    engine.rootContext()->setContextProperty("documentationModel", &documentationModel);
+
+    SpecificationTableModel specificationModel;
+    specificationModel.loadAll();
+    engine.rootContext()->setContextProperty("specificationModel", &specificationModel);
+
     qmlRegisterType<EmployeesTableModel>("Kurvot.Models", 1, 0, "EmployeesTableModel");
     qmlRegisterType<EmployeesWorkloadModel>("Kurvot.Models", 1, 0, "EmployeesWorkloadModel");
     qmlRegisterType<ProjectsTableModel>("Kurvot.Models", 1, 0, "ProjectsTableModel");
@@ -64,6 +88,11 @@ int main(int argc, char** argv) {
     qmlRegisterType<ProfitabilityTableModel>("Kurvot.Models", 1, 0, "ProfitabilityTableModel");
     qmlRegisterType<InfrastructureTableModel>("Kurvot.Models", 1, 0, "InfrastructureTableModel");
     qmlRegisterType<MonthlyFinancialTableModel>("Kurvot.Models", 1, 0, "MonthlyFinancialTableModel");
+    qmlRegisterType<ProjectTeamTableModel>("Kurvot.Models", 1, 0, "ProjectTeamTableModel");
+    qmlRegisterType<ProjectStatusModel>("Kurvot.Models", 1, 0, "ProjectStatusModel");
+    qmlRegisterType<ProjectTechnologiesTableModel>("Kurvot.Models", 1, 0, "ProjectTechnologiesTableModel");
+    qmlRegisterType<DocumentationTableModel>("Kurvot.Models", 1, 0, "DocumentationTableModel");
+    qmlRegisterType<SpecificationTableModel>("Kurvot.Models", 1, 0, "SpecificationTableModel");
 
     QObject::connect(
         &engine,
