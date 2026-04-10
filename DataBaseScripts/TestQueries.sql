@@ -168,7 +168,7 @@ SELECT * FROM get_employee_by_filters(p_cert_type := 'PMP');
 SELECT * FROM get_employee_by_filters(p_cert_type := 'Scrum');
 
 -- 3.12. Команда проекта 1 (активные сотрудники, по умолчанию)
-SELECT * FROM get_project_team(1);
+SELECT * FROM get_project_team();
 
 -- 3.13. Команда проекта 1, все сотрудники (активные + неактивные)
 SELECT * FROM get_project_team(1, p_is_active := NULL);
@@ -223,3 +223,9 @@ SELECT * FROM get_employee_workload(p_from := '2024-01-01', p_to := '2024-03-31'
 
 -- 5.6. Нагрузка сотрудника 6 по проекту 1
 SELECT * FROM get_employee_workload(ARRAY[6], ARRAY[1]);
+
+SELECT * FROM get_project_team(p_position_titles := ARRAY['Менеджер проекта']::varchar[], p_is_active := TRUE);
+
+-- SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;
+--
+-- SELECT column_name FROM information_schema.columns WHERE table_name = 'employee'

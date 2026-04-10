@@ -174,7 +174,7 @@ TEST_F(SqlFunctionsTest, GetProjectTeam_NoArgs) {
 }
 
 TEST_F(SqlFunctionsTest, GetProjectTeam_WithProjectId) {
-    auto results = db->getProjectTeam(1, std::nullopt, std::nullopt, std::nullopt);
+    auto results = db->getProjectTeam(1, std::nullopt, std::nullopt, std::nullopt, std::nullopt);
     for (const auto& r : results) {
         EXPECT_EQ(r.project_id, 1);
     }

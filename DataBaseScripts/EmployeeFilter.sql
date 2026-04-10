@@ -69,7 +69,8 @@ $$;
 CREATE OR REPLACE FUNCTION get_project_team(
     p_project_id INT DEFAULT NULL, -- ID проекта
     p_phase_id INT DEFAULT NULL, -- ID этапа проекта
-    p_roles VARCHAR[] DEFAULT NULL, -- Массив ролей (для поиска только разработчиков или тестировщиков)
+    p_roles VARCHAR[] DEFAULT NULL, -- Массив ролей в проекте
+    p_position_titles VARCHAR[] DEFAULT NULL, -- Массив должностей сотрудников
     p_is_active BOOLEAN DEFAULT TRUE
 )
     RETURNS TABLE
@@ -117,6 +118,7 @@ BEGIN
           AND (p_phase_id IS NULL OR pa.phase_id = p_phase_id)
 
           AND (p_roles IS NULL OR pa.role = ANY (p_roles))
+          AND (p_position_titles IS NULL OR pos.title = ANY (p_position_titles))
         ORDER BY pa.role, e.last_name, e.first_name;
 END;
 $$;

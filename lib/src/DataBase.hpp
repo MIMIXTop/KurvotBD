@@ -76,6 +76,7 @@ public:
         const std::optional<int>& projectId,
         const std::optional<int>& phaseId,
         const std::optional<std::vector<std::string>>& roles,
+        const std::optional<std::vector<std::string>>& positionTitles,
         const std::optional<bool>& isActive
     );
 
@@ -123,8 +124,9 @@ public:
         const std::string& endDate
     );
 
+    pqxx::connection& getConnection() { return connection; }
 
-
+    std::vector<std::string> getTableField(const std::string& ttableName);
     ~DataBase();
 
 private:

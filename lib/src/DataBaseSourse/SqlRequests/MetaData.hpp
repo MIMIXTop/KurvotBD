@@ -7,4 +7,6 @@ namespace lib::Constants {
             "WHERE table_schema = 'public' "
             "AND table_type = 'BASE TABLE' "
             "ORDER BY table_name";
+
+    constexpr std::string_view getTablesField = "SELECT column_name FROM information_schema.columns WHERE table_name = $1";
 }

@@ -11,6 +11,30 @@ DataBase::DataBase(const std::string &connectionString)
     : connection(connectionString) {
 }
 
+std::vector<std::string> DataBase::getTableField(const std::string &tableName) {
+    std::vector<std::string> tableField;
+
+    try {
+        pqxx::work txn(connection);
+
+        pqxx::params params;
+
+        lib::Sql::appendParam(params, tableName);
+
+        auto res = txn.exec(lib::Constants::getTablesField, params);
+
+        for (auto&& row : res) {
+            tableField.push_back(row[0].as<std::string>());
+        }
+
+        txn.commit();
+    } catch (const std::exception& e) {
+        std::println(std::cerr, "Error getting table name: {}", e.what());
+    }
+
+    return tableField;
+}
+
 DataBase::~DataBase() = default;
 
 std::vector<std::string> DataBase::getTablesNames() {
@@ -320,12 +344,12 @@ std::vector<lib::SqlFunctions::ProjectTechnologyResult> DataBase::getProjectTech
         
         bool first = true;
         if (isActive) {
-            sql += *isActive ? "TRUE" : "FALSE";
+            sql += "p_is_active := " + std::string(*isActive ? "TRUE" : "FALSE");
             first = false;
         }
         if (techName) {
             if (!first) sql += ", ";
-            sql += txn.quote(*techName);
+            sql += "p_tech_name := " + txn.quote(*techName);
         }
         
         sql += ")";
@@ -461,13 +485,14 @@ std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilt
 }
 
 std::vector<lib::SqlFunctions::ProjectTeamResult> DataBase::getProjectTeam() {
-    return getProjectTeam(std::nullopt, std::nullopt, std::nullopt, std::nullopt);
+    return getProjectTeam(std::nullopt, std::nullopt, std::nullopt, std::nullopt, std::nullopt);
 }
 
 std::vector<lib::SqlFunctions::ProjectTeamResult> DataBase::getProjectTeam(
     const std::optional<int>& projectId,
     const std::optional<int>& phaseId,
     const std::optional<std::vector<std::string>>& roles,
+    const std::optional<std::vector<std::string>>& positionTitles,
     const std::optional<bool>& isActive
 ) {
     std::vector<lib::SqlFunctions::ProjectTeamResult> results;
@@ -478,22 +503,32 @@ std::vector<lib::SqlFunctions::ProjectTeamResult> DataBase::getProjectTeam(
         bool first = true;
         
         if (projectId) {
-            sql += std::to_string(*projectId);
+            sql += "p_project_id := " + std::to_string(*projectId);
             first = false;
         }
         if (phaseId) {
             if (!first) sql += ", ";
-            sql += std::to_string(*phaseId);
+            sql += "p_phase_id := " + std::to_string(*phaseId);
             first = false;
         }
         if (roles && !roles->empty()) {
             if (!first) sql += ", ";
-            sql += "ARRAY[";
+            sql += "p_roles := ARRAY[";
             for (size_t i = 0; i < roles->size(); ++i) {
                 if (i > 0) sql += ", ";
                 sql += txn.quote((*roles)[i]);
             }
-            sql += "]";
+            sql += "]::varchar[]";
+            first = false;
+        }
+        if (positionTitles && !positionTitles->empty()) {
+            if (!first) sql += ", ";
+            sql += "p_position_titles := ARRAY[";
+            for (size_t i = 0; i < positionTitles->size(); ++i) {
+                if (i > 0) sql += ", ";
+                sql += txn.quote((*positionTitles)[i]);
+            }
+            sql += "]::varchar[]";
             first = false;
         }
         if (isActive) {
