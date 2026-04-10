@@ -41,12 +41,12 @@ Item {
     function updateStatusReport() {
         let projectId = projectTeamModel.getProjectId(statusProjectCombo.currentIndex)
         if (projectId > 0 && 
-            statusFromDate.text.length === 10 && 
-            statusToDate.text.length === 10) {
+            statusFromDate.selectedDate.length === 10 && 
+            statusToDate.selectedDate.length === 10) {
             projectStatusModel.loadStatus(
                 projectId,
-                statusFromDate.text,
-                statusToDate.text
+                statusFromDate.toSqlFormat(statusFromDate.selectedDate),
+                statusToDate.toSqlFormat(statusToDate.selectedDate)
             )
         }
     }
@@ -274,7 +274,7 @@ Item {
                             TableView {
                                 id: teamTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -356,23 +356,19 @@ Item {
                         }
 
                         // Дата от
-                        TextField {
+                        DatePicker {
                             id: statusFromDate
-                            width: 180
-                            height: 32
-                            text: "2024-01-01"
-                            placeholderText: "Дата от (ГГГГ-ММ-ДД)"
-                            onTextChanged: updateStatusReport()
+                            selectedDate: "01.01.2024"
+                            placeholderText: "Дата от (ДД.ММ.ГГГГ)"
+                            onSelectedDateChanged: updateStatusReport()
                         }
 
                         // Дата до
-                        TextField {
+                        DatePicker {
                             id: statusToDate
-                            width: 180
-                            height: 32
-                            text: "2026-12-31"
-                            placeholderText: "Дата до (ГГГГ-ММ-ДД)"
-                            onTextChanged: updateStatusReport()
+                            selectedDate: "31.12.2026"
+                            placeholderText: "Дата до (ДД.ММ.ГГГГ)"
+                            onSelectedDateChanged: updateStatusReport()
                         }
 
                         // Кнопка поиска
@@ -656,7 +652,7 @@ Item {
                             TableView {
                                 id: techTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -772,7 +768,7 @@ Item {
                             TableView {
                                 id: docTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -900,7 +896,7 @@ Item {
                             TableView {
                                 id: specTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1

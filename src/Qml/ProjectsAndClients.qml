@@ -172,19 +172,17 @@ Item {
                         }
 
                         // Даты завершения от
-                        TextField {
+                        DatePicker {
                             id: completedFromField
-                            width: 180
-                            height: 32
-                            placeholderText: "Завершен от (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Завершен от (ДД.ММ.ГГГГ)"
                         }
 
                         // Даты завершения до
-                        TextField {
+                        DatePicker {
                             id: completedToField
-                            width: 180
-                            height: 32
-                            placeholderText: "Завершен до (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Завершен до (ДД.ММ.ГГГГ)"
                         }
 
                         // Активность
@@ -230,10 +228,15 @@ Item {
                                 let minBudget = minBudgetField.text.length > 0 ? parseFloat(minBudgetField.text) : -1
                                 let maxBudget = maxBudgetField.text.length > 0 ? parseFloat(maxBudgetField.text) : -1
 
+                                let fromDate = completedFromField.selectedDate.length === 10 ? 
+                                    completedFromField.toSqlFormat(completedFromField.selectedDate) : ""
+                                let toDate = completedToField.selectedDate.length === 10 ? 
+                                    completedToField.toSqlFormat(completedToField.selectedDate) : ""
+
                                 projectsModel.applyFilters(
                                     statuses,
-                                    completedFromField.text,
-                                    completedToField.text,
+                                    fromDate,
+                                    toDate,
                                     clientTypes,
                                     methodologyCombo.currentIndex,
                                     minBudget,
@@ -267,7 +270,7 @@ Item {
                             TableView {
                                 id: projectsTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -339,19 +342,17 @@ Item {
                         Layout.preferredHeight: implicitHeight
 
                         // Период от
-                        TextField {
+                        DatePicker {
                             id: clientFromDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Период от (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Период от (ДД.ММ.ГГГГ)"
                         }
 
                         // Период до
-                        TextField {
+                        DatePicker {
                             id: clientToDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Период до (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Период до (ДД.ММ.ГГГГ)"
                         }
 
                         // Кнопка поиска
@@ -369,9 +370,14 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                             }
                             onClicked: {
+                                let fromDate = clientFromDateField.selectedDate.length === 10 ? 
+                                    clientFromDateField.toSqlFormat(clientFromDateField.selectedDate) : ""
+                                let toDate = clientToDateField.selectedDate.length === 10 ? 
+                                    clientToDateField.toSqlFormat(clientToDateField.selectedDate) : ""
+                                
                                 clientsModel.loadFiltered(
-                                    clientFromDateField.text,
-                                    clientToDateField.text
+                                    fromDate,
+                                    toDate
                                 )
                             }
                         }
@@ -400,7 +406,7 @@ Item {
                             TableView {
                                 id: clientsTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1

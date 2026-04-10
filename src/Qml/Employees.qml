@@ -171,7 +171,7 @@ Item {
                             TableView {
                                 id: tableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -254,19 +254,17 @@ Item {
                         }
 
                         // Период от
-                        TextField {
+                        DatePicker {
                             id: workloadFromDateField
-                            width: 150
-                            height: 32
-                            placeholderText: "Период от (ГГГГ-ММ-ДД)"
+                            selectedDate: "01.01.2024"
+                            placeholderText: "Период от (ДД.ММ.ГГГГ)"
                         }
 
                         // Период до
-                        TextField {
+                        DatePicker {
                             id: workloadToDateField
-                            width: 150
-                            height: 32
-                            placeholderText: "Период до (ГГГГ-ММ-ДД)"
+                            selectedDate: "31.12.2026"
+                            placeholderText: "Период до (ДД.ММ.ГГГГ)"
                         }
 
                         // Кнопка поиска
@@ -286,8 +284,10 @@ Item {
                                     projectIds = [selectedProject - 1]
                                 }
 
-                                let fromDate = workloadFromDateField.text
-                                let toDate = workloadToDateField.text
+                                let fromDate = workloadFromDateField.selectedDate.length === 10 ? 
+                                    workloadFromDateField.toSqlFormat(workloadFromDateField.selectedDate) : ""
+                                let toDate = workloadToDateField.selectedDate.length === 10 ? 
+                                    workloadToDateField.toSqlFormat(workloadToDateField.selectedDate) : ""
 
                                 workloadModel.loadFiltered(
                                     employeeIds,
@@ -322,7 +322,7 @@ Item {
                             TableView {
                                 id: workloadTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1

@@ -90,7 +90,7 @@ Item {
                 TableView {
                     id: techTableView
                     resizableColumns: true
-                    interactive: true
+                    interactive: false
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     columnSpacing: 1

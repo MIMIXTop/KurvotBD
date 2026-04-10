@@ -72,6 +72,7 @@ qt_add_qml_module(Kurvot
         src/Qml/StatusReports.qml
         src/Qml/Technologies.qml
         src/Qml/Documentation.qml
+        src/Qml/DatePicker.qml
 )
 
 add_subdirectory(lib)

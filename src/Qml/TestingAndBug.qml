@@ -169,19 +169,17 @@ Item {
                         }
 
                         // Дата обнаружения от
-                        TextField {
+                        DatePicker {
                             id: bugFoundFromField
-                            width: 180
-                            height: 32
-                            placeholderText: "Найдена от (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Найдена от (ДД.ММ.ГГГГ)"
                         }
 
                         // Дата обнаружения до
-                        TextField {
+                        DatePicker {
                             id: bugFoundToField
-                            width: 180
-                            height: 32
-                            placeholderText: "Найдена до (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Найдена до (ДД.ММ.ГГГГ)"
                         }
 
                         // Кнопка поиска
@@ -211,12 +209,17 @@ Item {
                                 if (severityMedium.checked) severities.push("средняя")
                                 if (severityLow.checked) severities.push("низкая")
 
+                                let fromDate = bugFoundFromField.selectedDate.length === 10 ? 
+                                    bugFoundFromField.toSqlFormat(bugFoundFromField.selectedDate) : ""
+                                let toDate = bugFoundToField.selectedDate.length === 10 ? 
+                                    bugFoundToField.toSqlFormat(bugFoundToField.selectedDate) : ""
+
                                 bugsModel.applyFilters(
                                     bugProjectCombo.currentIndex,
                                     statuses,
                                     severities,
-                                    bugFoundFromField.text,
-                                    bugFoundToField.text
+                                    fromDate,
+                                    toDate
                                 )
                             }
                         }
@@ -245,7 +248,7 @@ Item {
                             TableView {
                                 id: bugsTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -335,11 +338,17 @@ Item {
                         Layout.preferredHeight: implicitHeight
 
                         // Дата от
-                        TextField {
+                        DatePicker {
                             id: releaseFromDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Дата от (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Дата от (ДД.ММ.ГГГГ)"
+                        }
+
+                        // Дата до
+                        DatePicker {
+                            id: releaseToDateField
+                            selectedDate: ""
+                            placeholderText: "Дата до (ДД.ММ.ГГГГ)"
                         }
 
                         // Дата до
@@ -365,9 +374,14 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                             }
                             onClicked: {
+                                let fromDate = releaseFromDateField.selectedDate.length === 10 ? 
+                                    releaseFromDateField.toSqlFormat(releaseFromDateField.selectedDate) : ""
+                                let toDate = releaseToDateField.selectedDate.length === 10 ? 
+                                    releaseToDateField.toSqlFormat(releaseToDateField.selectedDate) : ""
+                                
                                 releasesModel.loadFiltered(
-                                    releaseFromDateField.text,
-                                    releaseToDateField.text
+                                    fromDate,
+                                    toDate
                                 )
                             }
                         }
@@ -396,7 +410,7 @@ Item {
                             TableView {
                                 id: releasesTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -459,19 +473,17 @@ Item {
                         }
 
                         // Период от
-                        TextField {
+                        DatePicker {
                             id: efficiencyFromDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Период от (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Период от (ДД.ММ.ГГГГ)"
                         }
 
                         // Период до
-                        TextField {
+                        DatePicker {
                             id: efficiencyToDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Период до (ГГГГ-ММ-ДД)"
+                            selectedDate: ""
+                            placeholderText: "Период до (ДД.ММ.ГГГГ)"
                         }
 
                         // Кнопка поиска
@@ -489,10 +501,15 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                             }
                             onClicked: {
+                                let fromDate = efficiencyFromDateField.selectedDate.length === 10 ? 
+                                    efficiencyFromDateField.toSqlFormat(efficiencyFromDateField.selectedDate) : ""
+                                let toDate = efficiencyToDateField.selectedDate.length === 10 ? 
+                                    efficiencyToDateField.toSqlFormat(efficiencyToDateField.selectedDate) : ""
+                                
                                 testingEfficiencyModel.loadFiltered(
                                     efficiencyProjectCombo.currentIndex,
-                                    efficiencyFromDateField.text,
-                                    efficiencyToDateField.text
+                                    fromDate,
+                                    toDate
                                 )
                             }
                         }
@@ -521,7 +538,7 @@ Item {
                             TableView {
                                 id: efficiencyTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1

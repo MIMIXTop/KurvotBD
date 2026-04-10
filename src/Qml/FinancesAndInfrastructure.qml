@@ -47,11 +47,17 @@ Item {
                         Layout.preferredHeight: implicitHeight
 
                         // Дата от
-                        TextField {
+                        DatePicker {
                             id: profitFromDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Дата от (ГГГГ-ММ-ДД)"
+                            selectedDate: "01.01.2024"
+                            placeholderText: "Дата от (ДД.ММ.ГГГГ)"
+                        }
+
+                        // Дата до
+                        DatePicker {
+                            id: profitToDateField
+                            selectedDate: "31.12.2026"
+                            placeholderText: "Дата до (ДД.ММ.ГГГГ)"
                         }
 
                         // Дата до
@@ -90,9 +96,14 @@ Item {
                                 verticalAlignment: Text.AlignVCenter
                             }
                             onClicked: {
+                                let fromDate = profitFromDateField.selectedDate.length === 10 ? 
+                                    profitFromDateField.toSqlFormat(profitFromDateField.selectedDate) : ""
+                                let toDate = profitToDateField.selectedDate.length === 10 ? 
+                                    profitToDateField.toSqlFormat(profitToDateField.selectedDate) : ""
+                                
                                 profitabilityModel.applyFilters(
-                                    profitFromDateField.text,
-                                    profitToDateField.text,
+                                    fromDate,
+                                    toDate,
                                     profitActiveCheck.checked
                                 )
                             }
@@ -122,7 +133,7 @@ Item {
                             TableView {
                                 id: profitTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -269,7 +280,7 @@ Item {
                             TableView {
                                 id: infraTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
@@ -294,11 +305,15 @@ Item {
                                             let expiryDate = new Date(expiry)
                                             let today = new Date()
                                             let daysUntilExpiry = (expiryDate - today) / (1000 * 60 * 60 * 24)
-                                            if (daysUntilExpiry < 30 && daysUntilExpiry >= 0) {
-                                                return "#ffebee"  // красный - истекает скоро
-                                            }
+                                            
                                             if (daysUntilExpiry < 0) {
-                                                return "#ffcdd2"  // тёмно-красный - уже истекла
+                                                return "#ffcdd2"  // 🔴 Красный - истекла
+                                            }
+                                            if (daysUntilExpiry >= 0 && daysUntilExpiry <= 30) {
+                                                return "#fff9c4"  // 🟡 Желтый - осталось ~месяц
+                                            }
+                                            if (daysUntilExpiry > 30) {
+                                                return "#c8e6c9"  // 🟢 Зеленый - действительна
                                             }
                                         }
                                         return row % 2 === 0 ? "white" : "#f9f9f9"
@@ -428,7 +443,7 @@ Item {
                             TableView {
                                 id: monthlyTableView
                                 resizableColumns: true
-                                interactive: true
+                                interactive: false
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
                                 columnSpacing: 1
