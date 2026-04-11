@@ -45,6 +45,8 @@ qt_add_executable(Kurvot
     src/Models/DocumentationTableModel.cpp
     src/Models/SpecificationTableModel.hpp
     src/Models/SpecificationTableModel.cpp
+    src/Models/SessionManager.hpp
+    src/Models/SessionManager.cpp
 )
 
 set_target_properties(Kurvot PROPERTIES
@@ -98,6 +100,8 @@ qt_add_qml_module(Kurvot
         src/Qml/Components/Dialogs/InfraDialog.qml
         src/Qml/Components/Dialogs/MonthlyDialog.qml
         src/Qml/Components/Dialogs/SpecDialog.qml
+        src/Qml/LoginDialog.qml
+        src/Qml/AdminPanel.qml
 )
 
 add_subdirectory(lib)

@@ -10,8 +10,8 @@
 CREATE ROLE admin_role LOGIN PASSWORD 'admin123';
 CREATE ROLE user_role LOGIN PASSWORD 'user123';
 
--- GRANT USAGE ON SCHEMA public TO admin_role;
--- GRANT USAGE ON SCHEMA public TO user_role;
+GRANT USAGE ON SCHEMA public TO admin_role;
+GRANT USAGE ON SCHEMA public TO user_role;
 
 -- Полные права для admin_role
 GRANT ALL ON ALL TABLES IN SCHEMA public TO admin_role;

@@ -18,11 +18,20 @@
 #include "Models/ProjectTechnologiesTableModel.hpp"
 #include "Models/DocumentationTableModel.hpp"
 #include "Models/SpecificationTableModel.hpp"
+#include "Models/SessionManager.hpp"
+
+static QObject* sessionManagerProvider(QQmlEngine* engine, QJSEngine* scriptEngine) {
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return SessionManager::instance();
+}
 
 int main(int argc, char** argv) {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    engine.rootContext()->setContextProperty("SessionManager", SessionManager::instance());
 
     ButtonFilterModel filterModel;
     engine.rootContext()->setContextProperty("filterModel", &filterModel);

@@ -8,7 +8,7 @@ Dialog {
     modal: true
     anchors.centerIn: parent
     width: 400
-    height: 280
+    height: 350
     
     property alias username: usernameField.text
     property alias password: passwordField.text
@@ -42,7 +42,7 @@ Dialog {
         
         TextField {
             id: usernameField
-            placeholderText: "Имя пользователя (admin_role / user_role)"
+            placeholderText: "Имя пользователя "
             Layout.fillWidth: true
             height: 40
             font.pixelSize: 14
@@ -81,13 +81,6 @@ Dialog {
                 }
                 SessionManager.login(usernameField.text, passwordField.text)
             }
-        }
-        
-        Text {
-            text: " admin_role / admin123 - полный доступ\n user_role / user123 - только просмотр"
-            font.pixelSize: 10
-            color: "#888888"
-            horizontalAlignment: Text.AlignHCenter
         }
     }
     

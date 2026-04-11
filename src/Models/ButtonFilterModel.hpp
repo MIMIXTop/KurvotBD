@@ -14,7 +14,8 @@ public:
         projects,
         testing,
         finance,
-        reports
+        reports,
+        admin
     };
     Q_ENUM(FilterType)
 
@@ -23,12 +24,13 @@ public:
         IdRole
     };
 
-    static constexpr std::array<std::pair<FilterType, std::string_view>, 5> filterLabels = {{
+    static constexpr std::array<std::pair<FilterType, std::string_view>, 6> filterLabels = {{
         {FilterType::employees, "👥 Сотрудники и Кадры"},
         {FilterType::projects, "📁 Проекты и Заказчики"},
         {FilterType::testing, "🐞 Тестирование и Баги"},
         {FilterType::finance, "💰 Финансы и Инфраструктура"},
-        {FilterType::reports, "📊 Отчеты и Документы"}
+        {FilterType::reports, "📊 Отчеты и Документы"},
+        {FilterType::admin, "⚙️ Администрирование"}
     }};
 
     explicit ButtonFilterModel(QObject* parent = nullptr);

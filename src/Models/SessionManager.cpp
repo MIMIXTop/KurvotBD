@@ -27,7 +27,12 @@ bool SessionManager::login(const QString& username, const QString& password) {
         if (testConn.is_open()) {
             m_currentUser = username;
             
-            if (username.contains("admin")) {
+            pqxx::work tx(testConn);
+            pqxx::result res = tx.exec("SELECT current_user");
+            
+            std::string roleName = res[0][0].as<std::string>();
+            
+            if (roleName == "admin_role") {
                 m_currentRole = "admin_role";
                 std::cout << "[AUDIT] User 'admin_role' logged in successfully" << std::endl;
             } else {

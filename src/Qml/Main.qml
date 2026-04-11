@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 Window {
     width: Screen.desktopAvailableWidth
@@ -9,9 +10,13 @@ Window {
     title: "Kurvot"
     visibility: Window.Maximized
 
-
     property int currentSelectedIndex: -1
     property int currentFilterType: -1
+
+    LoginDialog {
+        id: loginDialog
+        visible: !SessionManager.isLoggedIn
+    }
 
     Connections {
         target: filterModel
@@ -19,6 +24,16 @@ Window {
         function onFilterSelected(filterType) {
             currentFilterType = filterType
             console.log("C++ принял нажатие! Тип фильтра (enum):", filterType)
+        }
+    }
+
+    Connections {
+        target: SessionManager
+
+        function onLoginStateChanged() {
+            if (!SessionManager.isLoggedIn) {
+                currentSelectedIndex = -1
+            }
         }
     }
 
@@ -37,6 +52,10 @@ Window {
                 currentSelectedIndex = selectedIndex
 
                 filterModel.selectFilter(selectedIndex)
+            }
+
+            onLogoutClicked: {
+                SessionManager.logout()
             }
         }
 
@@ -64,6 +83,10 @@ Window {
 
             ReportsAndDocuments {
                 id: reportsAndDocuments
+            }
+
+            AdminPanel {
+                id: adminPanel
             }
         }
     }
