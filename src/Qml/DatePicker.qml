@@ -40,6 +40,7 @@ Rectangle {
         anchors.margins: 1
         placeholderText: root.placeholderText
         font.pixelSize: 13
+        color: "black"
         verticalAlignment: Text.AlignVCenter
         background: Rectangle {
             color: "transparent"
@@ -81,8 +82,8 @@ Rectangle {
         id: datePickerPopup
         x: 0
         y: root.height + 2
-        width: 280
-        height: 200
+        width: 360
+        height: 180
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -121,6 +122,12 @@ Rectangle {
                         }
                         return new Date().getDate() - 1
                     }
+                    contentItem: Text {
+                        text: dayCombo.displayText
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 5
+                    }
                 }
                 
                 // Месяц
@@ -134,6 +141,12 @@ Rectangle {
                             return month > 0 ? month - 1 : 0
                         }
                         return new Date().getMonth()
+                    }
+                    contentItem: Text {
+                        text: monthCombo.displayText
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 5
                     }
                 }
                 
@@ -154,6 +167,12 @@ Rectangle {
                             return year >= 2020 && year <= 2030 ? year - 2020 : 6
                         }
                         return new Date().getFullYear() - 2020
+                    }
+                    contentItem: Text {
+                        text: yearCombo.displayText
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        leftPadding: 5
                     }
                 }
             }

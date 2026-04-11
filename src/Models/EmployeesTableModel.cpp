@@ -24,7 +24,7 @@ int EmployeesTableModel::rowCount(const QModelIndex &parent) const {
 int EmployeesTableModel::columnCount(const QModelIndex &parent) const {
     if (parent.isValid())
         return 0;
-    return 8;
+    return 9;
 }
 
 QVariant EmployeesTableModel::data(const QModelIndex &index, int role) const {
