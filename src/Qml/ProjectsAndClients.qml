@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -255,73 +257,13 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        ProjectsTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: projectsHeaderView
-                                syncView: projectsTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "Клиент", "Тип клиента", "Статус", "Методология", "Бюджет", "Тип проекта", "Дата начала", "План. окончание", "Факт. окончание"]
-                            }
-
-                            TableView {
-                                id: projectsTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [250, 200, 150, 120, 120, 150, 150, 120, 150, 150];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: projectsModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            // Показать Alert с информацией о проекте
-                                            let projectId = projectsModel.data(projectsModel.index(row, 0), 257) // ProjectId role
-                                            let projectName = model.projectName || ""
-                                            let clientName = model.clientName || ""
-                                            let budget = model.budget || 0
-                                            
-                                            alertDialog.projectInfo = "ID: " + projectId + "\nПроект: " + projectName + "\nКлиент: " + clientName + "\nБюджет: " + Number(budget).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                                            alertDialog.open()
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.projectName || ""
-                                                case 1: return model.clientName || ""
-                                                case 2: return model.clientType || ""
-                                                case 3: return model.status || ""
-                                                case 4: return model.methodology || ""
-                                                case 5: return Number(model.budget).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                                                case 6: return model.type || ""
-                                                case 7: return model.startDate || ""
-                                                case 8: return model.plannedEndDate || ""
-                                                case 9: return model.actualEndDate || ""
-                                                default: return ""
-                                            }
-                                        }
-                                    }
-                                }
+                            tableModel: projectsModel
+                            onItemDoubleClicked: function(info) {
+                                alertDialog.projectInfo = info
+                                alertDialog.open()
                             }
                         }
                     }
@@ -391,55 +333,10 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        ClientsTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: clientsHeaderView
-                                syncView: clientsTableView
-                                Layout.fillWidth: true
-                                model: ["Клиент", "Активные проекты", "Общие затраты", "Первый проект", "Последний проект"]
-                            }
-
-                            TableView {
-                                id: clientsTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [300, 150, 200, 150, 150];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: clientsModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.clientName || ""
-                                                case 1: return model.activeProjects || 0
-                                                case 2: return Number(model.totalSpend).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                                                case 3: return model.earliestProjectDate || ""
-                                                case 4: return model.latestProjectDate || ""
-                                                default: return ""
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            tableModel: clientsModel
                         }
                     }
                 }
@@ -448,26 +345,7 @@ Item {
     }
 
     // Alert Dialog для отображения информации о проекте
-    Dialog {
+    ProjectDialog {
         id: alertDialog
-        title: "Информация о проекте"
-        modal: true
-        anchors.centerIn: parent
-        width: 400
-        height: 200
-
-        property string projectInfo: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            Text {
-                anchors.centerIn: parent
-                text: alertDialog.projectInfo
-                font.pixelSize: 14
-                wrapMode: Text.WordWrap
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 }

@@ -1,0 +1,15 @@
+module Components.Tables
+TechnologiesTable 1.0 TechnologiesTable.qml
+TeamTable 1.0 TeamTable.qml
+DocumentationTable 1.0 DocumentationTable.qml
+EmployeesTable 1.0 EmployeesTable.qml
+WorkloadTable 1.0 WorkloadTable.qml
+ProfitabilityTable 1.0 ProfitabilityTable.qml
+InfrastructureTable 1.0 InfrastructureTable.qml
+MonthlyFinancialTable 1.0 MonthlyFinancialTable.qml
+ProjectsTable 1.0 ProjectsTable.qml
+ClientsTable 1.0 ClientsTable.qml
+BugsTable 1.0 BugsTable.qml
+ReleasesTable 1.0 ReleasesTable.qml
+EfficiencyTable 1.0 EfficiencyTable.qml
+SpecificationTable 1.0 SpecificationTable.qml

@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -149,75 +151,14 @@ Item {
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        color: "white"
-                        radius: 5
-                        border {
-                            width: 10
-                            color: "white"
-                        }
+                        color: "#f5f5f5"
+                        radius: 8
+                        Layout.margins: 5
 
-                        ColumnLayout {
+                        EmployeesTable {
                             anchors.fill: parent
                             anchors.margins: 1
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: horizontalHeader
-                                syncView: tableView
-                                Layout.fillWidth: true
-                                model: ["Имя", "Отдел", "Должность", "Возраст", "Зарплата", "Опыт", "Email", "Телефон"]
-                            }
-
-                            TableView {
-                                id: tableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [300, 230, 180, 50, 150, 80, 180, 120];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: employeesTableModel
-
-                                delegate: Rectangle {
-                                    id: tile
-                                    implicitHeight: 50
-                                    border.width: 1
-
-                                    Text {
-                                        anchors.centerIn: parent
-
-                                        text: {
-                                            switch (column) {
-                                                case 0:
-                                                    return model.employeeName
-                                                case 1:
-                                                    return model.departmentName
-                                                case 2:
-                                                    return model.position
-                                                case 3:
-                                                    return model.age
-                                                case 4:
-                                                    return Number(model.salary).toLocaleString(Qt.locale("ru_RU"), 'f', 0)
-                                                case 5:
-                                                    return model.experienceYears
-                                                case 6:
-                                                    return model.email
-                                                case 7:
-                                                    return model.phone
-                                                default:
-                                                    return ""
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            tableModel: employeesTableModel
                         }
                     }
                 }
@@ -234,7 +175,9 @@ Item {
                         Layout.fillWidth: true
                         Layout.margins: 10
                         spacing: 10
+
                         Layout.preferredHeight: implicitHeight
+
 
                         // Выбор сотрудника (множественный выбор)
                         ComboBox {
@@ -307,54 +250,10 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        WorkloadTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: workloadHeaderView
-                                syncView: workloadTableView
-                                Layout.fillWidth: true
-                                model: ["Сотрудник", "Проект", "Часов", "Задач"]
-                            }
-
-                            TableView {
-                                id: workloadTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [250, 300, 100, 80];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: workloadModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.employeeName || ""
-                                                case 1: return model.projectName || ""
-                                                case 2: return Number(model.totalHours).toLocaleString(Qt.locale("ru_RU"), 'f', 2)
-                                                case 3: return model.taskCount || 0
-                                                default: return ""
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            tableModel: workloadModel
                         }
                     }
                 }

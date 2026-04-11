@@ -5,6 +5,7 @@
 #include "EmployeesTableModel.hpp"
 
 #include <future>
+#include <iostream>
 
 #include "SqlFunctions.hpp"
 
@@ -60,12 +61,12 @@ QHash<int, QByteArray> EmployeesTableModel::roleNames() const {
     return {
         {NameRole, "employeeName"},
         {DepartmentName, "departmentName"},
-        {Position, "position"},
+        {Position, "positionTitle"},
         {Age, "age"},
         {Salary, "salary"},
-        {ExperienceYears, "experienceYears"},
+        {ExperienceYears, "yearsOfExperience"},
         {Email, "email"},
-        {Phone, "phone"},
+        {Phone, "phoneNumber"},
     };
 }
 
@@ -108,6 +109,8 @@ return database->getEmployeeByFilters(deptIds, posTitles, optMinExp, optMaxExp, 
     beginResetModel();
     employees = res.get();
     endResetModel();
+
+    std::println(std::cout, "{}", employees.begin()->position_title);
 }
 
 void EmployeesTableModel::updateDepartmentList() {

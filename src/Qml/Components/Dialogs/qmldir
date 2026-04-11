@@ -1,0 +1,10 @@
+module Components.Dialogs
+TechDialog 1.0 TechDialog.qml
+TeamDialog 1.0 TeamDialog.qml
+DocDialog 1.0 DocDialog.qml
+ProfitDialog 1.0 ProfitDialog.qml
+InfraDialog 1.0 InfraDialog.qml
+MonthlyDialog 1.0 MonthlyDialog.qml
+ProjectDialog 1.0 ProjectDialog.qml
+BugDialog 1.0 BugDialog.qml
+SpecDialog 1.0 SpecDialog.qml

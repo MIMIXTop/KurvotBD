@@ -73,6 +73,31 @@ qt_add_qml_module(Kurvot
         src/Qml/Technologies.qml
         src/Qml/Documentation.qml
         src/Qml/DatePicker.qml
+        src/Qml/Components/Tables/qmldir
+        src/Qml/Components/Tables/TechnologiesTable.qml
+        src/Qml/Components/Tables/TeamTable.qml
+        src/Qml/Components/Tables/DocumentationTable.qml
+        src/Qml/Components/Tables/EmployeesTable.qml
+        src/Qml/Components/Tables/WorkloadTable.qml
+        src/Qml/Components/Tables/ProfitabilityTable.qml
+        src/Qml/Components/Tables/InfrastructureTable.qml
+        src/Qml/Components/Tables/MonthlyFinancialTable.qml
+        src/Qml/Components/Tables/ProjectsTable.qml
+        src/Qml/Components/Tables/ClientsTable.qml
+        src/Qml/Components/Tables/BugsTable.qml
+        src/Qml/Components/Tables/ReleasesTable.qml
+        src/Qml/Components/Tables/EfficiencyTable.qml
+        src/Qml/Components/Tables/SpecificationTable.qml
+        src/Qml/Components/Dialogs/qmldir
+        src/Qml/Components/Dialogs/TechDialog.qml
+        src/Qml/Components/Dialogs/TeamDialog.qml
+        src/Qml/Components/Dialogs/DocDialog.qml
+        src/Qml/Components/Dialogs/ProjectDialog.qml
+        src/Qml/Components/Dialogs/BugDialog.qml
+        src/Qml/Components/Dialogs/ProfitDialog.qml
+        src/Qml/Components/Dialogs/InfraDialog.qml
+        src/Qml/Components/Dialogs/MonthlyDialog.qml
+        src/Qml/Components/Dialogs/SpecDialog.qml
 )
 
 add_subdirectory(lib)

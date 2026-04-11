@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -75,87 +77,19 @@ Item {
             radius: 8
             Layout.margins: 5
 
-            ColumnLayout {
+            TechnologiesTable {
                 anchors.fill: parent
                 anchors.margins: 5
-                spacing: 0
-
-                HorizontalHeaderView {
-                    id: techHeaderView
-                    syncView: techTableView
-                    Layout.fillWidth: true
-                    model: ["Технология", "Количество проектов"]
-                }
-
-                TableView {
-                    id: techTableView
-                    resizableColumns: true
-                    interactive: false
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    columnSpacing: 1
-                    rowSpacing: 1
-                    clip: true
-
-                    columnWidthProvider: function (column) {
-                        let minWidths = [300, 200];
-                        return minWidths[column] || 100;
-                    }
-
-                    model: technologiesModel
-
-                    delegate: Rectangle {
-                        implicitHeight: 50
-                        border.width: 1
-                        color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onDoubleClicked: {
-                                techDialog.techInfo = "Технология: " + (model.techName || "") +
-                                    "\nИспользуется в проектах: " + (model.projectCount || 0)
-                                techDialog.open()
-                            }
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: {
-                                switch (column) {
-                                    case 0: return model.techName || ""
-                                    case 1: return (model.projectCount || 0).toString()
-                                    default: return ""
-                                }
-                            }
-                        }
-                    }
+                tableModel: technologiesModel
+                onItemDoubleClicked: function(info) {
+                    techDialog.techInfo = info
+                    techDialog.open()
                 }
             }
         }
     }
 
-    // Dialog для технологий
-    Dialog {
+    TechDialog {
         id: techDialog
-        title: "Информация о технологии"
-        modal: true
-        anchors.centerIn: parent
-        width: 400
-        height: 200
-
-        property string techInfo: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            Text {
-                anchors.fill: parent
-                anchors.margins: 20
-                text: techDialog.techInfo
-                font.pixelSize: 14
-                wrapMode: Text.WordWrap
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 }

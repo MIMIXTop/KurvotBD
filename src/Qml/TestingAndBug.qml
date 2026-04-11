@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -233,91 +235,13 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        BugsTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: bugsHeaderView
-                                syncView: bugsTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "Название", "Описание", "Статус", "Серьезность", "Найден кем", "Исправлен кем", "Создан", "Дата обнаружения", "Дата исправления"]
-                            }
-
-                            TableView {
-                                id: bugsTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [150, 200, 250, 120, 120, 200, 200, 150, 120, 120];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: bugsModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            // Показать Alert с информацией о баг
-                                            let projectName = model.projectName || ""
-                                            let title = model.title || ""
-                                            let description = model.description || ""
-                                            let status = model.status || ""
-                                            let severity = model.severity || ""
-                                            let foundBy = model.foundBy || ""
-                                            let fixedBy = model.fixedBy || ""
-                                            let createdAt = model.createdAt || ""
-                                            let foundDate = model.foundDate || ""
-                                            let fixedDate = model.fixedDate || ""
-                                            
-                                            bugDialog.bugInfo = "Проект: " + projectName +
-                                                "\nНазвание: " + title + 
-                                                "\nОписание: " + description + 
-                                                "\nСтатус: " + status + 
-                                                "\nСерьезность: " + severity + 
-                                                "\nНайден кем: " + foundBy + 
-                                                "\nИсправлен кем: " + fixedBy + 
-                                                "\nСоздан: " + createdAt + 
-                                                "\nДата обнаружения: " + foundDate + 
-                                                "\nДата исправления: " + fixedDate
-                                            bugDialog.open()
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.fill: parent
-                                        anchors.margins: 5
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.projectName || ""
-                                                case 1: return model.title || ""
-                                                case 2: return model.description || ""
-                                                case 3: return model.status || ""
-                                                case 4: return model.severity || ""
-                                                case 5: return model.foundBy || ""
-                                                case 6: return model.fixedBy || ""
-                                                case 7: return model.createdAt || ""
-                                                case 8: return model.foundDate || ""
-                                                case 9: return model.fixedDate || ""
-                                                default: return ""
-                                            }
-                                        }
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
+                            tableModel: bugsModel
+                            onItemDoubleClicked: function(info) {
+                                bugDialog.bugInfo = info
+                                bugDialog.open()
                             }
                         }
                     }
@@ -349,14 +273,6 @@ Item {
                             id: releaseToDateField
                             selectedDate: ""
                             placeholderText: "Дата до (ДД.ММ.ГГГГ)"
-                        }
-
-                        // Дата до
-                        TextField {
-                            id: releaseToDateField
-                            width: 180
-                            height: 32
-                            placeholderText: "Дата до (ГГГГ-ММ-ДД)"
                         }
 
                         // Кнопка поиска
@@ -395,57 +311,10 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        ReleasesTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: releasesHeaderView
-                                syncView: releasesTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "Версия", "Дата релиза", "Changelog"]
-                            }
-
-                            TableView {
-                                id: releasesTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [200, 120, 150, 400];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: releasesModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    Text {
-                                        anchors.fill: parent
-                                        anchors.margins: 5
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.projectName || ""
-                                                case 1: return model.version || ""
-                                                case 2: return model.releaseDate || ""
-                                                case 3: return model.changelog || ""
-                                                default: return ""
-                                            }
-                                        }
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
-                            }
+                            tableModel: releasesModel
                         }
                     }
                 }
@@ -523,54 +392,10 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        EfficiencyTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: efficiencyHeaderView
-                                syncView: efficiencyTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "Баги в тесте", "Баги после релиза", "Коэффициент эффективности"]
-                            }
-
-                            TableView {
-                                id: efficiencyTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [250, 150, 180, 220];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: testingEfficiencyModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.projectName || ""
-                                                case 1: return model.bugsInTest || 0
-                                                case 2: return model.bugsAfterRelease || 0
-                                                case 3: return Number(model.efficiencyRatio).toFixed(2)
-                                                default: return ""
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            tableModel: testingEfficiencyModel
                         }
                     }
                 }
@@ -579,27 +404,7 @@ Item {
     }
 
     // Alert Dialog для отображения информации о баге
-    Dialog {
+    BugDialog {
         id: bugDialog
-        title: "Информация о баге"
-        modal: true
-        anchors.centerIn: parent
-        width: 500
-        height: 400
-
-        property string bugInfo: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            Text {
-                anchors.fill: parent
-                anchors.margins: 20
-                text: bugDialog.bugInfo
-                font.pixelSize: 14
-                wrapMode: Text.WordWrap
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 }

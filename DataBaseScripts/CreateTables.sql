@@ -172,7 +172,7 @@ CREATE TABLE ProjectSpecification
     document_text TEXT NOT NULL,
     version       INTEGER NOT NULL DEFAULT 1,
     created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_by    INTEGER REFERENCES Employee (employee_id) ON DELETE SET NULL -- кто инициировал/изменил
+    updated_by    INTEGER REFERENCES Employee (employee_id) ON DELETE SET NULL
 );
 
 CREATE TABLE WorkLog

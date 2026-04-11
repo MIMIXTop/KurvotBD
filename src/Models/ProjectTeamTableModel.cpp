@@ -1,5 +1,6 @@
 #include "ProjectTeamTableModel.hpp"
 #include <future>
+#include <iostream>
 
 ProjectTeamTableModel::ProjectTeamTableModel(QObject *parent)
     : QAbstractTableModel(parent)
@@ -65,6 +66,8 @@ void ProjectTeamTableModel::loadAll() {
     beginResetModel();
     teamData = database->getProjectTeam();
     endResetModel();
+
+    std::println(std::cout, "{}", teamData.begin()->phase_name);
 }
 
 void ProjectTeamTableModel::applyFilters(int projectIndex, const QVariantList &roles, const QVariantList &positions, bool isActive, int sortIndex) {

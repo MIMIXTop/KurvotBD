@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -40,7 +42,9 @@ Item {
 
     function updateStatusReport() {
         let projectId = projectTeamModel.getProjectId(statusProjectCombo.currentIndex)
-        if (projectId > 0 && 
+        console.log(projectId)
+
+        if (projectId > 0 &&
             statusFromDate.selectedDate.length === 10 && 
             statusToDate.selectedDate.length === 10) {
             projectStatusModel.loadStatus(
@@ -259,73 +263,13 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        TeamTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: teamHeaderView
-                                syncView: teamTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "ФИО", "Должность", "Роль", "Фаза", "Часы"]
-                            }
-
-                            TableView {
-                                id: teamTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [200, 200, 150, 150, 150, 80];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: projectTeamModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            teamDialog.teamInfo = "Проект: " + (model.projectName || "") +
-                                                "\nФИО: " + (model.fullName || "") +
-                                                "\nДолжность: " + (model.positionTitle || "") +
-                                                "\nРоль: " + (model.projectRole || "") +
-                                                "\nФаза: " + (model.phaseName || "") +
-                                                "\nДата начала: " + (model.startDate || "") +
-                                                "\nДата окончания: " + (model.endDate || "") +
-                                                "\nЧасы выделено: " + (model.hoursAllocated || 0)
-                                            teamDialog.open()
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.fill: parent
-                                        anchors.margins: 5
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.projectName || ""
-                                                case 1: return model.fullName || ""
-                                                case 2: return model.positionTitle || ""
-                                                case 3: return model.projectRole || ""
-                                                case 4: return model.phaseName || ""
-                                                case 5: return (model.hoursAllocated || 0).toString()
-                                                default: return ""
-                                            }
-                                        }
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
+                            tableModel: projectTeamModel
+                            onItemDoubleClicked: function(info) {
+                                teamDialog.teamInfo = info
+                                teamDialog.open()
                             }
                         }
                     }
@@ -637,60 +581,13 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        TechnologiesTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: techHeaderView
-                                syncView: techTableView
-                                Layout.fillWidth: true
-                                model: ["Технология", "Количество проектов"]
-                            }
-
-                            TableView {
-                                id: techTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [300, 200];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: technologiesModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            techDialog.techInfo = "Технология: " + (model.techName || "") +
-                                                "\nИспользуется в проектах: " + (model.projectCount || 0)
-                                            techDialog.open()
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: {
-                                            switch (column) {
-                                                case 0: return model.techName || ""
-                                                case 1: return (model.projectCount || 0).toString()
-                                                default: return ""
-                                            }
-                                        }
-                                    }
-                                }
+                            tableModel: technologiesModel
+                            onItemDoubleClicked: function(info) {
+                                techDialog.techInfo = info
+                                techDialog.open()
                             }
                         }
                     }
@@ -753,81 +650,14 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        DocumentationTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: docHeaderView
-                                syncView: docTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "Тип", "Версия/Дата", "Автор", "Последнее обновление", "Путь"]
-                            }
-
-                            TableView {
-                                id: docTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [200, 150, 120, 150, 120, 200];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: documentationModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            docDialog.docInfo = "ID: " + (model.docId || 0) +
-                                                "\nПроект: " + (model.projectName || "") +
-                                                "\nТип: " + (model.docType || "") +
-                                                "\nАвтор: " + (model.authorName || "") +
-                                                "\nДата создания: " + (model.creationDate || "") +
-                                                "\nПоследнее обновление: " + (model.lastUpdate || "") +
-                                                "\nПуть: " + (model.storagePath || "")
-
-                                            docDialog.docContent = model.documentText || ""
-                                            docDialog.open();
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.fill: parent
-                                        anchors.margins: 5
-                                        text: {
-                                            switch (column) {
-                                                case 0:
-                                                    return model.projectName || ""
-                                                case 1:
-                                                    return model.docType || ""
-                                                case 2:
-                                                    return model.creationDate || ""
-                                                case 3:
-                                                    return model.authorName || ""
-                                                case 4:
-                                                    return model.lastUpdate || ""
-                                                case 5:
-                                                    return model.storagePath || ""
-                                                default:
-                                                    return ""
-                                            }
-                                        }
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
+                            tableModel: documentationModel
+                            onItemDoubleClicked: function(info, content) {
+                                docDialog.docInfo = info
+                                docDialog.docContent = content
+                                docDialog.open()
                             }
                         }
                     }
@@ -881,77 +711,14 @@ Item {
                         radius: 8
                         Layout.margins: 5
 
-                        ColumnLayout {
+                        SpecificationTable {
                             anchors.fill: parent
                             anchors.margins: 5
-                            spacing: 0
-
-                            HorizontalHeaderView {
-                                id: specHeaderView
-                                syncView: specTableView
-                                Layout.fillWidth: true
-                                model: ["Проект", "Версия", "Автор", "Дата создания", "Последнее обновление"]
-                            }
-
-                            TableView {
-                                id: specTableView
-                                resizableColumns: true
-                                interactive: false
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                columnSpacing: 1
-                                rowSpacing: 1
-                                clip: true
-
-                                columnWidthProvider: function (column) {
-                                    let minWidths = [250, 120, 200, 150, 150];
-                                    return minWidths[column] || 100;
-                                }
-
-                                model: specificationModel
-
-                                delegate: Rectangle {
-                                    implicitHeight: 50
-                                    border.width: 1
-                                    color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        onDoubleClicked: {
-                                            specDialog.specInfo = "Проект: " + (model.projectName || "") +
-                                                "\nВерсия: " + (model.version || "") +
-                                                "\nАвтор: " + (model.authorName || "") +
-                                                "\nДата создания: " + (model.creationDate || "") +
-                                                "\nПоследнее обновление: " + (model.lastUpdate || "")
-
-                                            specDialog.specContent = model.documentText || ""
-                                            specDialog.open()
-                                        }
-                                    }
-
-                                    Text {
-                                        anchors.fill: parent
-                                        anchors.margins: 5
-                                        text: {
-                                            switch (column) {
-                                                case 0:
-                                                    return model.projectName || ""
-                                                case 1:
-                                                    return model.version || ""
-                                                case 2:
-                                                    return model.authorName || ""
-                                                case 3:
-                                                    return model.creationDate || ""
-                                                case 4:
-                                                    return model.lastUpdate || ""
-                                                default:
-                                                    return ""
-                                            }
-                                        }
-                                        elide: Text.ElideRight
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
+                            tableModel: specificationModel
+                            onItemDoubleClicked: function(info, content) {
+                                specDialog.specInfo = info
+                                specDialog.specContent = content
+                                specDialog.open()
                             }
                         }
                     }
@@ -961,147 +728,22 @@ Item {
     }
 
     // Dialog для команды
-    Dialog {
+    TeamDialog {
         id: teamDialog
-        title: "Информация о сотруднике"
-        modal: true
-        anchors.centerIn: parent
-        width: 500
-        height: 350
-
-        property string teamInfo: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            Text {
-                anchors.fill: parent
-                anchors.margins: 20
-                text: teamDialog.teamInfo
-                font.pixelSize: 14
-                wrapMode: Text.WordWrap
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 
     // Dialog для технологий
-    Dialog {
+    TechDialog {
         id: techDialog
-        title: "Информация о технологии"
-        modal: true
-        anchors.centerIn: parent
-        width: 400
-        height: 200
-
-        property string techInfo: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            Text {
-                anchors.fill: parent
-                anchors.margins: 20
-                text: techDialog.techInfo
-                font.pixelSize: 14
-                wrapMode: Text.WordWrap
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 
     // Dialog для документации
-    Dialog {
+    DocDialog {
         id: docDialog
-        title: "Информация о документе"
-        modal: true
-        anchors.centerIn: parent
-        width: 700
-        height: 600
-
-        property string docInfo: ""
-        property string docContent: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 20
-                spacing: 10
-
-                Text {
-                    text: docDialog.docInfo
-                    font.pixelSize: 14
-                    Layout.fillWidth: true
-                    wrapMode: Text.WordWrap
-                }
-
-                Text {
-                    text: "Содержание / ТЗ:"
-                    font.bold: true
-                    visible: docDialog.docContent.length > 0
-                }
-
-                TextArea {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    visible: docDialog.docContent.length > 0
-                    text: docDialog.docContent
-                    readOnly: true
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 13
-                }
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 
     // Dialog для спецификаций
-    Dialog {
+    SpecDialog {
         id: specDialog
-        title: "Спецификация проекта"
-        modal: true
-        anchors.centerIn: parent
-        width: 800
-        height: 700
-
-        property string specInfo: ""
-        property string specContent: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 20
-                spacing: 10
-
-                Text {
-                    text: specDialog.specInfo
-                    font.pixelSize: 14
-                    Layout.fillWidth: true
-                    wrapMode: Text.WordWrap
-                }
-
-                Text {
-                    text: "Техническое задание:"
-                    font.bold: true
-                    font.pixelSize: 16
-                    visible: specDialog.specContent.length > 0
-                }
-
-                TextArea {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    visible: specDialog.specContent.length > 0
-                    text: specDialog.specContent
-                    readOnly: true
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 13
-                }
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 }

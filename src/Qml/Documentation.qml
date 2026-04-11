@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -78,130 +80,20 @@ Item {
             radius: 8
             Layout.margins: 5
 
-            ColumnLayout {
+            DocumentationTable {
                 anchors.fill: parent
                 anchors.margins: 5
-                spacing: 0
-
-                HorizontalHeaderView {
-                    id: docHeaderView
-                    syncView: docTableView
-                    Layout.fillWidth: true
-                    model: ["Проект", "Тип", "Версия/Дата", "Автор", "Последнее обновление", "Путь"]
-                }
-
-                TableView {
-                    id: docTableView
-                    resizableColumns: true
-                    interactive: false
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    columnSpacing: 1
-                    rowSpacing: 1
-                    clip: true
-
-                    columnWidthProvider: function (column) {
-                        let minWidths = [200, 150, 120, 150, 120, 200];
-                        return minWidths[column] || 100;
-                    }
-
-                    model: documentationModel
-
-                    delegate: Rectangle {
-                        implicitHeight: 50
-                        border.width: 1
-                        color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onDoubleClicked: {
-                                docDialog.docInfo = "ID: " + (model.docId || 0) +
-                                    "\nПроект: " + (model.projectName || "") +
-                                    "\nТип: " + (model.docType || "") +
-                                    "\nАвтор: " + (model.authorName || "") +
-                                    "\nДата создания: " + (model.creationDate || "") +
-                                    "\nПоследнее обновление: " + (model.lastUpdate || "") +
-                                    "\nПуть: " + (model.storagePath || "")
-
-                                docDialog.docContent = model.documentText || ""
-                                docDialog.open()
-                            }
-                        }
-
-                        Text {
-                            anchors.fill: parent
-                            anchors.margins: 5
-                            text: {
-                                switch (column) {
-                                    case 0:
-                                        return model.projectName || ""
-                                    case 1:
-                                        return model.docType || ""
-                                    case 2:
-                                        return model.creationDate || ""
-                                    case 3:
-                                        return model.authorName || ""
-                                    case 4:
-                                        return model.lastUpdate || ""
-                                    case 5:
-                                        return model.storagePath || ""
-                                    default:
-                                        return ""
-                                }
-                            }
-                            elide: Text.ElideRight
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
+                tableModel: documentationModel
+                onItemDoubleClicked: function(info, content) {
+                    docDialog.docInfo = info
+                    docDialog.docContent = content
+                    docDialog.open()
                 }
             }
         }
     }
 
-    // Dialog для документации
-    Dialog {
+    DocDialog {
         id: docDialog
-        title: "Информация о документе"
-        modal: true
-        anchors.centerIn: parent
-        width: 700
-        height: 600
-
-        property string docInfo: ""
-        property string docContent: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            ColumnLayout {
-                anchors.fill: parent
-                anchors.margins: 20
-                spacing: 10
-
-                Text {
-                    text: docDialog.docInfo
-                    font.pixelSize: 14
-                    Layout.fillWidth: true
-                    wrapMode: Text.WordWrap
-                }
-
-                Text {
-                    text: "Содержание / ТЗ:"
-                    font.bold: true
-                    visible: docDialog.docContent.length > 0
-                }
-
-                TextArea {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    visible: docDialog.docContent.length > 0
-                    text: docDialog.docContent
-                    readOnly: true
-                    wrapMode: Text.WordWrap
-                    font.pixelSize: 13
-                }
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 }

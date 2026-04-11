@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Tables"
+import "Components/Dialogs"
 
 Item {
     Layout.fillWidth: true
@@ -184,100 +186,19 @@ Item {
             radius: 8
             Layout.margins: 5
 
-            ColumnLayout {
+            TeamTable {
                 anchors.fill: parent
                 anchors.margins: 5
-                spacing: 0
-
-                HorizontalHeaderView {
-                    id: teamHeaderView
-                    syncView: teamTableView
-                    Layout.fillWidth: true
-                    model: ["Проект", "ФИО", "Должность", "Роль", "Фаза", "Часы"]
-                }
-
-                TableView {
-                    id: teamTableView
-                    resizableColumns: true
-                    interactive: false
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    columnSpacing: 1
-                    rowSpacing: 1
-                    clip: true
-
-                    columnWidthProvider: function (column) {
-                        let minWidths = [200, 200, 150, 150, 150, 80];
-                        return minWidths[column] || 100;
-                    }
-
-                    model: projectTeamModel
-
-                    delegate: Rectangle {
-                        implicitHeight: 50
-                        border.width: 1
-                        color: row % 2 === 0 ? "white" : "#f9f9f9"
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onDoubleClicked: {
-                                teamDialog.teamInfo = "Проект: " + (model.projectName || "") +
-                                    "\nФИО: " + (model.fullName || "") +
-                                    "\nДолжность: " + (model.positionTitle || "") +
-                                    "\nРоль: " + (model.projectRole || "") +
-                                    "\nФаза: " + (model.phaseName || "") +
-                                    "\nДата начала: " + (model.startDate || "") +
-                                    "\nДата окончания: " + (model.endDate || "") +
-                                    "\nЧасы выделено: " + (model.hoursAllocated || 0)
-                                teamDialog.open()
-                            }
-                        }
-
-                        Text {
-                            anchors.fill: parent
-                            anchors.margins: 5
-                            text: {
-                                switch (column) {
-                                    case 0: return model.projectName || ""
-                                    case 1: return model.fullName || ""
-                                    case 2: return model.positionTitle || ""
-                                    case 3: return model.projectRole || ""
-                                    case 4: return model.phaseName || ""
-                                    case 5: return (model.hoursAllocated || 0).toString()
-                                    default: return ""
-                                }
-                            }
-                            elide: Text.ElideRight
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
+                tableModel: projectTeamModel
+                onItemDoubleClicked: function(info) {
+                    teamDialog.teamInfo = info
+                    teamDialog.open()
                 }
             }
         }
     }
 
-    // Dialog для команды
-    Dialog {
+    TeamDialog {
         id: teamDialog
-        title: "Информация о сотруднике"
-        modal: true
-        anchors.centerIn: parent
-        width: 500
-        height: 350
-
-        property string teamInfo: ""
-
-        contentItem: Rectangle {
-            color: "white"
-            Text {
-                anchors.fill: parent
-                anchors.margins: 20
-                text: teamDialog.teamInfo
-                font.pixelSize: 14
-                wrapMode: Text.WordWrap
-            }
-        }
-
-        standardButtons: Dialog.Ok
     }
 }

@@ -126,7 +126,7 @@ QHash<int, QByteArray> ProjectsTableModel::roleNames() const {
     roles[ClientName] = "clientName";
     roles[ClientType] = "clientType";
     roles[Status] = "status";
-    roles[Type] = "type";
+    roles[Type] = "projectType";
     roles[Methodology] = "methodology";
     roles[StartDate] = "startDate";
     roles[PlannedEndDate] = "plannedEndDate";

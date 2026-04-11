@@ -58,7 +58,7 @@ void ProfitabilityTableModel::loadAll() {
 void ProfitabilityTableModel::applyFilters(const QString &fromDate, const QString &toDate, bool isActive) {
     std::optional<std::string> optFromDate = fromDate.isEmpty() ? std::nullopt : std::optional<std::string>(fromDate.toStdString());
     std::optional<std::string> optToDate = toDate.isEmpty() ? std::nullopt : std::optional<std::string>(toDate.toStdString());
-    std::optional<bool> optIsActive = isActive ? std::optional<bool>(true) : std::nullopt;
+    std::optional<bool> optIsActive = std::optional<bool>(isActive);
 
     auto res = std::async([this, optFromDate, optToDate, optIsActive] {
         return database->getProjectProfitability(optFromDate, optToDate, optIsActive);
