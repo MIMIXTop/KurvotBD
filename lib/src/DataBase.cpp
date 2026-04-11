@@ -475,6 +475,44 @@ std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilt
             r.salary = row["salary"].as<double>();
             r.email = row["email"].is_null() ? "" : row["email"].as<std::string>();
             r.phone = row["phone"].is_null() ? "" : row["phone"].as<std::string>();
+            r.cert_type = row["cert_type"].is_null() ? "" : row["cert_type"].as<std::string>();
+            r.cert_issue_date = row["cert_issue_date"].is_null() ? "" : row["cert_issue_date"].as<std::string>();
+
+            auto langs = row["programming_languages"];
+            if (!langs.is_null()) {
+                r.programming_languages = langs.as<std::vector<std::string>>();
+            }
+            auto fws = row["frameworks"];
+            if (!fws.is_null()) {
+                r.frameworks = fws.as<std::vector<std::string>>();
+            }
+            r.backend_exp = row["backend_exp"].as<bool>(false);
+            r.frontend_exp = row["frontend_exp"].as<bool>(false);
+            r.mobile_exp = row["mobile_exp"].as<bool>(false);
+            r.dev_experience_years = row["dev_experience_years"].as<int>(0);
+
+            auto testTypes = row["testing_types"];
+            if (!testTypes.is_null()) {
+                r.testing_types = testTypes.as<std::vector<std::string>>();
+            }
+            auto autoTools = row["automation_tools"];
+            if (!autoTools.is_null()) {
+                r.automation_tools = autoTools.as<std::vector<std::string>>();
+            }
+            auto certs = row["certifications"];
+            if (!certs.is_null()) {
+                r.certifications = certs.as<std::vector<std::string>>();
+            }
+
+            r.manager_cert_type = row["manager_cert_type"].is_null() ? "" : row["manager_cert_type"].as<std::string>();
+            r.manager_issue_date = row["manager_issue_date"].is_null() ? "" : row["manager_issue_date"].as<std::string>();
+            if (!row["manager_expiry_date"].is_null()) {
+                r.manager_expiry_date = row["manager_expiry_date"].as<std::string>();
+            }
+            if (!row["project_complexity"].is_null()) {
+                r.project_complexity = row["project_complexity"].as<std::string>();
+            }
+
             results.push_back(r);
         }
         txn.commit();
@@ -552,6 +590,7 @@ std::vector<lib::SqlFunctions::ProjectTeamResult> DataBase::getProjectTeam(
             r.project_role = row["project_role"].as<std::string>();
             r.project_name = row["project_name"].as<std::string>();
             r.phase_name = row["phase_name"].is_null() ? "" : row["phase_name"].as<std::string>();
+            r.current_phase = row["current_phase"].is_null() ? "" : row["current_phase"].as<std::string>();
             r.start_date = row["start_date"].as<std::string>();
             r.end_date = row["end_date"].is_null() ? "" : row["end_date"].as<std::string>();
             r.hours_allocated = row["hours_allocated"].as<int>();

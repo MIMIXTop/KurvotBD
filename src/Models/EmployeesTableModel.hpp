@@ -23,7 +23,22 @@ public:
         Salary,
         ExperienceYears,
         Email,
-        Phone
+        Phone,
+        CertType,
+        CertIssueDate,
+        ProgrammingLanguages,
+        Frameworks,
+        BackendExp,
+        FrontendExp,
+        MobileExp,
+        DevExperienceYears,
+        TestingTypes,
+        AutomationTools,
+        Certifications,
+        ManagerCertType,
+        ManagerIssueDate,
+        ManagerExpiryDate,
+        ProjectComplexity
     };
 
     explicit EmployeesTableModel(QObject *parent = nullptr);

@@ -24,7 +24,23 @@ CREATE OR REPLACE FUNCTION get_employee_by_filters(
                 email            VARCHAR(100),
                 phone            VARCHAR(20),
                 cert_type        VARCHAR(100),
-                cert_issue_date  DATE
+                cert_issue_date  DATE,
+
+                programming_languages TEXT[],
+                frameworks            TEXT[],
+                backend_exp           BOOLEAN,
+                frontend_exp          BOOLEAN,
+                mobile_exp            BOOLEAN,
+                dev_experience_years  INT,
+
+                testing_types     TEXT[],
+                automation_tools  TEXT[],
+                certifications    TEXT[],
+
+                manager_cert_type     VARCHAR(100),
+                manager_issue_date    DATE,
+                manager_expiry_date   DATE,
+                project_complexity    VARCHAR(50)
             )
     LANGUAGE plpgsql
 AS
@@ -44,12 +60,31 @@ BEGIN
                e.email,
                e.phone,
                mc.cert_type,
-               mc.issue_date
+               mc.issue_date,
+
+               ds.programming_languages,
+               ds.frameworks,
+               ds.backend_exp,
+               ds.frontend_exp,
+               ds.mobile_exp,
+               ds.experience_years,
+
+               ts.testing_types,
+               ts.automation_tools,
+               ts.certifications,
+
+               mc2.cert_type,
+               mc2.issue_date,
+               mc2.expiry_date,
+               mc2.project_complexity
         FROM Employee e
                  JOIN Department d ON e.department_id = d.department_id
                  JOIN Position p ON e.position_id = p.position_id
+                 LEFT JOIN DeveloperSpecialization ds ON e.employee_id = ds.employee_id
+                 LEFT JOIN TesterSpecialization ts ON e.employee_id = ts.employee_id
                  LEFT JOIN ManagerCertification mc ON e.employee_id = mc.employee_id
-                    AND (p_cert_type IS NULL OR mc.cert_type ILIKE '%' || p_cert_type || '%')
+                     AND (p_cert_type IS NULL OR mc.cert_type ILIKE '%' || p_cert_type || '%')
+                 LEFT JOIN ManagerCertification mc2 ON e.employee_id = mc2.employee_id
         WHERE (p_is_active IS NULL OR e.is_active = p_is_active)
 
           AND (p_department_ids IS NULL OR e.department_id = ANY (p_department_ids))
@@ -67,10 +102,10 @@ END;
 $$;
 
 CREATE OR REPLACE FUNCTION get_project_team(
-    p_project_id INT DEFAULT NULL, -- ID проекта
-    p_phase_id INT DEFAULT NULL, -- ID этапа проекта
-    p_roles VARCHAR[] DEFAULT NULL, -- Массив ролей в проекте
-    p_position_titles VARCHAR[] DEFAULT NULL, -- Массив должностей сотрудников
+    p_project_id INT DEFAULT NULL,
+    p_phase_id INT DEFAULT NULL,
+    p_roles VARCHAR[] DEFAULT NULL,
+    p_position_titles VARCHAR[] DEFAULT NULL,
     p_is_active BOOLEAN DEFAULT TRUE
 )
     RETURNS TABLE
@@ -84,6 +119,7 @@ CREATE OR REPLACE FUNCTION get_project_team(
                 project_role    VARCHAR(100),
                 project_name    VARCHAR(200),
                 phase_name      VARCHAR(100),
+                current_phase   VARCHAR(100),
                 start_date      DATE,
                 end_date        DATE,
                 hours_allocated INT
@@ -102,7 +138,16 @@ BEGIN
                pos.title                                               AS position_title,
                pa.role                                                 AS project_role,
                pr.name                                                 AS project_name,
-               pp.name                                                 AS phase_name,
+               COALESCE(pp.name, 'Без фазы')                          AS phase_name,
+               (
+                   SELECT pp2.name
+                   FROM ProjectPhase pp2
+                   WHERE pp2.project_id = pr.project_id
+                     AND pp2.start_date <= CURRENT_DATE
+                     AND (pp2.end_date IS NULL OR pp2.end_date >= CURRENT_DATE)
+                   ORDER BY pp2.order_number DESC
+                   LIMIT 1
+               )                                                       AS current_phase,
                pa.start_date,
                pa.end_date,
                pa.hours_allocated

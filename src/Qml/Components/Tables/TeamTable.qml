@@ -13,7 +13,7 @@ ColumnLayout {
         id: teamHeaderView
         syncView: teamTableView
         Layout.fillWidth: true
-        model: ["Проект", "ФИО", "Должность", "Роль", "Фаза", "Часы"]
+        model: ["Проект", "ФИО", "Должность", "Роль", "Текущая фаза", "Часы"]
     }
 
     TableView {
@@ -27,7 +27,7 @@ ColumnLayout {
         clip: true
 
         columnWidthProvider: function (column) {
-            let minWidths = [200, 200, 150, 150, 150, 80];
+            let minWidths = [220, 200, 150, 150, 180, 80];
             return minWidths[column] || 100;
         }
 
@@ -45,7 +45,7 @@ ColumnLayout {
                         "\nФИО: " + (model.fullName || "") +
                         "\nДолжность: " + (model.positionTitle || "") +
                         "\nРоль: " + (model.projectRole || "") +
-                        "\nФаза: " + (model.phaseName || "") +
+                        "\nТекущая фаза: " + (model.currentPhase || "") +
                         "\nДата начала: " + (model.startDate || "") +
                         "\nДата окончания: " + (model.endDate || "") +
                         "\nЧасы выделено: " + (model.hoursAllocated || 0)
@@ -62,7 +62,7 @@ ColumnLayout {
                         case 1: return model.fullName || ""
                         case 2: return model.positionTitle || ""
                         case 3: return model.projectRole || ""
-                        case 4: return model.phaseName || ""
+                        case 4: return model.currentPhase || model.phaseName || ""
                         case 5: return (model.hoursAllocated || 0).toString()
                         default: return ""
                     }

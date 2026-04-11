@@ -52,6 +52,7 @@ QVariant ProjectTeamTableModel::data(const QModelIndex &index, int role) const {
             case ProjectRole: return QString::fromStdString(item.project_role);
             case ProjectName: return QString::fromStdString(item.project_name);
             case PhaseName: return QString::fromStdString(item.phase_name);
+            case CurrentPhase: return QString::fromStdString(item.current_phase);
             case StartDate: return QString::fromStdString(item.start_date);
             case EndDate: return QString::fromStdString(item.end_date);
             case HoursAllocated: return item.hours_allocated;
@@ -132,6 +133,7 @@ QHash<int, QByteArray> ProjectTeamTableModel::roleNames() const {
     roles[ProjectRole] = "projectRole";
     roles[ProjectName] = "projectName";
     roles[PhaseName] = "phaseName";
+    roles[CurrentPhase] = "currentPhase";
     roles[StartDate] = "startDate";
     roles[EndDate] = "endDate";
     roles[HoursAllocated] = "hoursAllocated";

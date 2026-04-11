@@ -24,6 +24,7 @@ public:
         ProjectRole,
         ProjectName,
         PhaseName,
+        CurrentPhase,
         StartDate,
         EndDate,
         HoursAllocated

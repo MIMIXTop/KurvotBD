@@ -42,6 +42,41 @@ QVariant EmployeesTableModel::data(const QModelIndex &index, int role) const {
         case ExperienceYears: return res.experience_years;
         case Email: return QString::fromStdString(res.email);
         case Phone: return QString::fromStdString(res.phone);
+        case CertType: return QString::fromStdString(res.cert_type);
+        case CertIssueDate: return QString::fromStdString(res.cert_issue_date);
+        case ProgrammingLanguages: {
+            QStringList list;
+            for (const auto& s : res.programming_languages) list << QString::fromStdString(s);
+            return list;
+        }
+        case Frameworks: {
+            QStringList list;
+            for (const auto& s : res.frameworks) list << QString::fromStdString(s);
+            return list;
+        }
+        case BackendExp: return res.backend_exp;
+        case FrontendExp: return res.frontend_exp;
+        case MobileExp: return res.mobile_exp;
+        case DevExperienceYears: return res.dev_experience_years;
+        case TestingTypes: {
+            QStringList list;
+            for (const auto& s : res.testing_types) list << QString::fromStdString(s);
+            return list;
+        }
+        case AutomationTools: {
+            QStringList list;
+            for (const auto& s : res.automation_tools) list << QString::fromStdString(s);
+            return list;
+        }
+        case Certifications: {
+            QStringList list;
+            for (const auto& s : res.certifications) list << QString::fromStdString(s);
+            return list;
+        }
+        case ManagerCertType: return QString::fromStdString(res.manager_cert_type);
+        case ManagerIssueDate: return QString::fromStdString(res.manager_issue_date);
+        case ManagerExpiryDate: return QString::fromStdString(res.manager_expiry_date.value_or(""));
+        case ProjectComplexity: return QString::fromStdString(res.project_complexity.value_or(""));
 
         case Qt::DisplayRole:
             if (index.column() == 0) return QString::fromStdString(res.full_name);
@@ -67,6 +102,21 @@ QHash<int, QByteArray> EmployeesTableModel::roleNames() const {
         {ExperienceYears, "yearsOfExperience"},
         {Email, "email"},
         {Phone, "phoneNumber"},
+        {CertType, "certType"},
+        {CertIssueDate, "certIssueDate"},
+        {ProgrammingLanguages, "programmingLanguages"},
+        {Frameworks, "frameworks"},
+        {BackendExp, "backendExp"},
+        {FrontendExp, "frontendExp"},
+        {MobileExp, "mobileExp"},
+        {DevExperienceYears, "devExperienceYears"},
+        {TestingTypes, "testingTypes"},
+        {AutomationTools, "automationTools"},
+        {Certifications, "certifications"},
+        {ManagerCertType, "managerCertType"},
+        {ManagerIssueDate, "managerIssueDate"},
+        {ManagerExpiryDate, "managerExpiryDate"},
+        {ProjectComplexity, "projectComplexity"},
     };
 }
 

@@ -56,6 +56,24 @@ struct EmployeeFilterResult {
     float salary;
     std::string email;
     std::string phone;
+    std::string cert_type;
+    std::string cert_issue_date;
+
+    std::vector<std::string> programming_languages;
+    std::vector<std::string> frameworks;
+    bool backend_exp;
+    bool frontend_exp;
+    bool mobile_exp;
+    int dev_experience_years;
+
+    std::vector<std::string> testing_types;
+    std::vector<std::string> automation_tools;
+    std::vector<std::string> certifications;
+
+    std::string manager_cert_type;
+    std::string manager_issue_date;
+    std::optional<std::string> manager_expiry_date;
+    std::optional<std::string> project_complexity;
 };
 
 struct ProjectTeamResult {
@@ -68,6 +86,7 @@ struct ProjectTeamResult {
     std::string project_role;
     std::string project_name;
     std::string phase_name;
+    std::string current_phase;
     std::string start_date;
     std::string end_date;
     int hours_allocated;
