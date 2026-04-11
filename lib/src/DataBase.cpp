@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <format>
+#include <sstream>
 
 #include "DataBaseSourse/SqlRequests/MetaData.hpp"
 #include "DataBaseSourse/SqlRequests/ModelMeta.hpp"
@@ -478,31 +479,35 @@ std::vector<lib::SqlFunctions::EmployeeFilterResult> DataBase::getEmployeeByFilt
             r.cert_type = row["cert_type"].is_null() ? "" : row["cert_type"].as<std::string>();
             r.cert_issue_date = row["cert_issue_date"].is_null() ? "" : row["cert_issue_date"].as<std::string>();
 
-            auto langs = row["programming_languages"];
-            if (!langs.is_null()) {
-                r.programming_languages = langs.as<std::vector<std::string>>();
-            }
-            auto fws = row["frameworks"];
-            if (!fws.is_null()) {
-                r.frameworks = fws.as<std::vector<std::string>>();
-            }
+            auto parseStringArray = [](const pqxx::field& field) -> std::vector<std::string> {
+                std::vector<std::string> result;
+                if (field.is_null()) return result;
+                std::string str = field.as<std::string>();
+                if (str.empty() || str == "{}") return result;
+                if (str.front() == '{' && str.back() == '}') {
+                    str = str.substr(1, str.length() - 2);
+                    std::stringstream ss(str);
+                    std::string item;
+                    while (std::getline(ss, item, ',')) {
+                        if (!item.empty() && item.front() == '"' && item.back() == '"') {
+                            item = item.substr(1, item.length() - 2);
+                        }
+                        result.push_back(item);
+                    }
+                }
+                return result;
+            };
+
+            r.programming_languages = parseStringArray(row["programming_languages"]);
+            r.frameworks = parseStringArray(row["frameworks"]);
             r.backend_exp = row["backend_exp"].as<bool>(false);
             r.frontend_exp = row["frontend_exp"].as<bool>(false);
             r.mobile_exp = row["mobile_exp"].as<bool>(false);
             r.dev_experience_years = row["dev_experience_years"].as<int>(0);
 
-            auto testTypes = row["testing_types"];
-            if (!testTypes.is_null()) {
-                r.testing_types = testTypes.as<std::vector<std::string>>();
-            }
-            auto autoTools = row["automation_tools"];
-            if (!autoTools.is_null()) {
-                r.automation_tools = autoTools.as<std::vector<std::string>>();
-            }
-            auto certs = row["certifications"];
-            if (!certs.is_null()) {
-                r.certifications = certs.as<std::vector<std::string>>();
-            }
+            r.testing_types = parseStringArray(row["testing_types"]);
+            r.automation_tools = parseStringArray(row["automation_tools"]);
+            r.certifications = parseStringArray(row["certifications"]);
 
             r.manager_cert_type = row["manager_cert_type"].is_null() ? "" : row["manager_cert_type"].as<std::string>();
             r.manager_issue_date = row["manager_issue_date"].is_null() ? "" : row["manager_issue_date"].as<std::string>();
