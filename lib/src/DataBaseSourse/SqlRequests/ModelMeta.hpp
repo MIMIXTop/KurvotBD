@@ -877,7 +877,7 @@ namespace lib::Meta {
                 .document_text = row["document_text"].as<std::string>(),
                 .version = row["version"].as<int>(),
                 .created_at = row["created_at"].as<std::string>(),
-                .updated_by = row["updated_by"].as<int>()
+                .updated_by = row["updated_by"].is_null() ? 0 : row["updated_by"].as<int>()
             };
         }
     };

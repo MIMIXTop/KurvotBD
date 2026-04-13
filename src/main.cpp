@@ -20,6 +20,7 @@
 #include "Models/SpecificationTableModel.hpp"
 #include "Models/SessionManager.hpp"
 #include "Models/AdminTable.hpp"
+#include "Models/FormHelper.hpp"
 
 static QObject* sessionManagerProvider(QQmlEngine* engine, QJSEngine* scriptEngine) {
     Q_UNUSED(engine)
@@ -91,6 +92,9 @@ int main(int argc, char** argv) {
     auto adminModel = new AdminTable(&engine);
     adminModel->initialize();
     engine.rootContext()->setContextProperty("adminModel", adminModel);
+
+    auto formHelper = new FormHelper(&engine);
+    engine.rootContext()->setContextProperty("formHelper", formHelper);
 
     qmlRegisterType<EmployeesTableModel>("Kurvot.Models", 1, 0, "EmployeesTableModel");
     qmlRegisterType<EmployeesWorkloadModel>("Kurvot.Models", 1, 0, "EmployeesWorkloadModel");

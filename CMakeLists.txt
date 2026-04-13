@@ -59,6 +59,7 @@ qt_add_executable(Kurvot
     src/Models/SessionManager.cpp
     src/Models/AdminTable.cpp
     src/Models/AdminTable.hpp
+    src/Models/FormHelper.hpp
 )
 
 set_target_properties(Kurvot PROPERTIES
@@ -114,6 +115,8 @@ qt_add_qml_module(Kurvot
         src/Qml/Components/Dialogs/SpecDialog.qml
         src/Qml/LoginDialog.qml
         src/Qml/AdminPanel.qml
+        src/Qml/Components/Forms/GenericEditForm.qml
+        src/Qml/Components/Forms/DoubleSpinBox.qml
 )
 
 add_subdirectory(lib)

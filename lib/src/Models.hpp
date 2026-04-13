@@ -278,7 +278,7 @@ namespace lib::Models {
         std::string document_text;
         int version;
         std::string created_at;
-        int updated_by;
+        int updated_by = 0;
     };
 
     using Model = std::variant<Department, Position, Client, Employee, SoftwareLicense, DeveloperSpecialization, TesterSpecialization, ManagerCertification, Project, ProjectPhase, ProjectAssignment, LicenseAllocation, CloudResource, WorkLog, Bug, Release, Documentation, ProjectSpecification>;

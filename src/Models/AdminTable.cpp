@@ -8,6 +8,7 @@
 #include <iostream>
 #include <QDebug>
 
+#include "FormMeta.hpp"
 #include "util/util.hpp"
 
 int AdminTable::rowCount(const QModelIndex &parent) const {
@@ -98,4 +99,70 @@ void AdminTable::updateTableNameList() {
         m_tableNameList << QString::fromStdString(tableName);
     }
     emit tableNameListChanged();
+}
+
+QVariantMap AdminTable::getRowData(int row) {
+    QVariantMap result;
+
+    if (row < 0 || row >= m_models.size()) {
+        return result;
+    }
+
+    auto &&item = m_models[row];
+
+    // 1. Маппинг имени таблицы в имя модели (так же, как в FormHelper)
+    static const QMap<QString, QString> tableToModelMapping = {
+        {"department", "Department"},
+        {"position", "Position"},
+        {"client", "Client"},
+        {"software_license", "SoftwareLicense"},
+        {"softwarelicense", "SoftwareLicense"},
+        {"employee", "Employee"},
+        {"developer_specialization", "DeveloperSpecialization"},
+        {"developerspecialization", "DeveloperSpecialization"},
+        {"tester_specialization", "TesterSpecialization"},
+        {"testerspecialization", "TesterSpecialization"},
+        {"manager_certification", "ManagerCertification"},
+        {"managercertification", "ManagerCertification"},
+        {"project", "Project"},
+        {"project_phase", "ProjectPhase"},
+        {"projectphase", "ProjectPhase"},
+        {"project_assignment", "ProjectAssignment"},
+        {"projectassignment", "ProjectAssignment"},
+        {"license_allocation", "LicenseAllocation"},
+        {"licenseallocation", "LicenseAllocation"},
+        {"cloudresource", "CloudResource"},
+        {"cloud_resource", "CloudResource"},
+        {"worklog", "WorkLog"},
+        {"work_log", "WorkLog"},
+        {"bug", "Bug"},
+        {"release", "Release"},
+        {"documentation", "Documentation"},
+        {"project_specification", "ProjectSpecification"},
+        {"projectspecification", "ProjectSpecification"}
+    };
+
+    QString modelName = tableToModelMapping.value(m_currentTableName, m_currentTableName);
+
+    // 2. Получаем метаданные полей из FormMeta
+    auto formDef = lib::FormMeta::getFormDefinition(modelName.toStdString());
+
+    // 3. Заполняем данными, используя field.name в качестве ключей
+    for (size_t col = 0; col < formDef.fields.size(); ++col) {
+        // Безопасность: проверяем, что индекс не превышает количество колонок в модели
+        if (col >= static_cast<size_t>(columnCount())) {
+            break;
+        }
+
+        const auto& field = formDef.fields[col];
+        QString fieldName = QString::fromStdString(field.name); // Ключ: "name", "type" и т.д.
+
+        QVariant fieldValue = std::visit([&](auto &&model) {
+            return lib::util::getFieldAsQVariant(model, static_cast<int>(col));
+        }, item);
+        
+        result[fieldName] = fieldValue;
+    }
+    
+    return result;
 }

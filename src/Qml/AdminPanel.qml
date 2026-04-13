@@ -1,9 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "Components/Forms"
 
 Item {
     id: adminPanel
+    
+    property int selectedRow: -1
+    property var selectedRowData: ({})
     
     ColumnLayout {
         anchors.fill: parent
@@ -55,6 +59,9 @@ Item {
                     adminModel.currentTableName = currentText
                     statusText.text = "Выбрана таблица: " + currentText
                     statusText.color = "#2196F3"
+                    // Сбрасываем выбранную строку при смене таблицы
+                    selectedRow = -1
+                    selectedRowData = {}
                 }
                 Component.onCompleted: {
                     adminModel.currentTableName = currentText
@@ -140,9 +147,9 @@ Item {
                         rowHeightProvider: function(row) { return 40; }
 
                         delegate: Rectangle {
-                            color: row % 2 === 0 ? "white" : "#fcfcfc" // Зебра
-                            border.color: "#eeeeee"
-                            border.width: 1
+                            color: selectedRow === row ? "#e3f2fd" : (row % 2 === 0 ? "white" : "#fcfcfc")
+                            border.color: selectedRow === row ? "#2196F3" : "#eeeeee"
+                            border.width: selectedRow === row ? 2 : 1
 
                             Text {
                                 anchors.fill: parent
@@ -152,6 +159,17 @@ Item {
                                 text: model.display !== undefined ? model.display : ""
                                 elide: Text.ElideRight
                                 color: "#444444"
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    selectedRow = row
+                                    // Получаем данные выбранной строки
+                                    selectedRowData = adminModel.getRowData(row)
+                                    statusText.text = "Выбрана строка: " + (row + 1)
+                                    statusText.color = "#2196F3"
+                                }
                             }
                         }
                     }
@@ -172,20 +190,84 @@ Item {
                     Button {
                         text: "Добавить"
                         icon.name: "list-add"
-                        enabled: false
+                        enabled: adminModel.currentTableName !== ""
                         onClicked: {
-                            statusText.text = "Функция добавления не реализована"
-                            statusText.color = "#ff9800"
+                            editForm.isEditMode = false
+                            editForm.formTitle = adminModel.currentTableName
+                            
+                            // Преобразуем имя таблицы в имя модели
+                            let modelName = formHelper.tableNameToModelName(adminModel.currentTableName)
+                            editForm.currentModel = modelName
+
+                            // Загрузка конфигурации формы
+                            let configStr = formHelper.getFormConfig(modelName)
+                            let config = JSON.parse(configStr)
+
+                            // Загрузка данных для FK
+                            let fkData = {}
+                            for (let i = 0; i < config.fields.length; i++) {
+                                let field = config.fields[i]
+                                if (field.fk_info) {
+                                    fkData[field.fk_info.source_table] = formHelper.getForeignKeyData(field.fk_info.source_table)
+                                }
+                            }
+                            editForm.fkData = fkData
+
+                            // Инициализация пустых данных
+                            let initialData = {}
+                            for (let i = 0; i < config.fields.length; i++) {
+                                let field = config.fields[i]
+                                if (!field.is_auto_generated && !field.is_primary_key) {
+                                    if (field.type === "Boolean") initialData[field.name] = false
+                                    else if (field.type === "Number" || field.type === "DoubleNumber") initialData[field.name] = 0
+                                    else initialData[field.name] = ""
+                                }
+                            }
+                            
+                            editForm.setupForm(config.fields, initialData)
+                            editForm.open()
                         }
                     }
                     
                     Button {
                         text: "Редактировать"
                         icon.name: "document-edit"
-                        enabled: false
+                        enabled: selectedRow >= 0
                         onClicked: {
-                            statusText.text = "Функция редактирования не реализована"
-                            statusText.color = "#ff9800"
+                            editForm.isEditMode = true
+                            editForm.formTitle = adminModel.currentTableName
+                            
+                            // Преобразуем имя таблицы в имя модели
+                            let modelName = formHelper.tableNameToModelName(adminModel.currentTableName)
+                            editForm.currentModel = modelName
+                            
+                            console.log("Current table name:", adminModel.currentTableName)
+                            console.log("Model name:", modelName)
+
+                            // Загрузка конфигурации формы
+                            let configStr = formHelper.getFormConfig(modelName)
+                            console.log("Config string:", configStr)
+                            let config = JSON.parse(configStr)
+                            console.log("Parsed config:", JSON.stringify(config))
+
+                            // Загрузка данных для FK
+                            let fkData = {}
+                            for (let i = 0; i < config.fields.length; i++) {
+                                let field = config.fields[i]
+                                if (field.fk_info) {
+                                    fkData[field.fk_info.source_table] = formHelper.getForeignKeyData(field.fk_info.source_table)
+                                }
+                            }
+                            editForm.fkData = fkData
+
+                            // selectedRowData уже содержит правильные имена полей (field.name)
+                            console.log("Selected row data:", JSON.stringify(selectedRowData))
+                            console.log("Config fields:", JSON.stringify(config.fields.map(f => f.name)))
+
+                            // Загрузка данных выбранной строки
+                            console.log("FINAL DATA TO FORM:", JSON.stringify(selectedRowData))
+                            editForm.setupForm(config.fields, selectedRowData)
+                            editForm.open()
                         }
                     }
                     
@@ -229,6 +311,45 @@ Item {
                 color: "#666666"
                 verticalAlignment: Text.AlignVCenter
                 font.pixelSize: 12
+            }
+        }
+    }
+
+    // Форма редактирования/добавления
+    GenericEditForm {
+        id: editForm
+        onSaveRequested: function(data) {
+            let formData = editForm.getFormData()
+            console.log("Save requested for:", editForm.currentModel, formData)
+            
+            let success = false
+            if (editForm.isEditMode) {
+                // Режим редактирования - получаем ID из selectedRowData
+                let recordId = selectedRowData[Object.keys(selectedRowData)[0]] // Первое поле - обычно ID
+                success = formHelper.updateRecord(editForm.currentModel, recordId, formData)
+                if (success) {
+                    statusText.text = "Запись обновлена: " + editForm.currentModel
+                    statusText.color = "#4CAF50"
+                    selectedRow = -1
+                    selectedRowData = {}
+                } else {
+                    statusText.text = "Ошибка при обновлении записи"
+                    statusText.color = "#f44336"
+                }
+            } else {
+                // Режим добавления
+                success = formHelper.insertRecord(editForm.currentModel, formData)
+                if (success) {
+                    statusText.text = "Запись добавлена: " + editForm.currentModel
+                    statusText.color = "#4CAF50"
+                } else {
+                    statusText.text = "Ошибка при добавлении записи"
+                    statusText.color = "#f44336"
+                }
+            }
+            
+            if (success) {
+                adminModel.loadTableData()
             }
         }
     }

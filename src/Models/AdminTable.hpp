@@ -44,6 +44,7 @@ public:
 
 public slots:
     void loadTableData();
+    Q_INVOKABLE QVariantMap getRowData(int row);
 
 signals:
     void headerListChanged();
