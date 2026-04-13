@@ -43,7 +43,7 @@ protected:
 
 TEST_F(DeleteModelTest, DeleteDepartmentById) {
     db->appendModel(Department{
-        .id = 0,
+        .department_id = 0,
         .name = "Тестовый отдел",
         .type = DepartmentType::Testing
     });
@@ -51,7 +51,7 @@ TEST_F(DeleteModelTest, DeleteDepartmentById) {
     EXPECT_EQ(countRows("department"), 1);
     EXPECT_TRUE(rowExists("department", "department_id", "1"));
 
-    db->deleteById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
+    db->deleteById(Department{.department_id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
 
     EXPECT_EQ(countRows("department"), 0);
     EXPECT_FALSE(rowExists("department", "department_id", "1"));
@@ -59,7 +59,7 @@ TEST_F(DeleteModelTest, DeleteDepartmentById) {
 
 TEST_F(DeleteModelTest, DeletePositionById) {
     db->appendModel(Position{
-        .id = 0,
+        .position_id = 0,
         .title = "Junior Dev",
         .category = PositionCategory::Technical_staff,
         .min_salary = 80000.0,
@@ -68,14 +68,14 @@ TEST_F(DeleteModelTest, DeletePositionById) {
 
     EXPECT_EQ(countRows("position"), 1);
 
-    db->deleteById(Position{.id=0,.title="",.category=PositionCategory::Technical_staff,.min_salary=0,.max_salary=0,.created_at=""}, "1");
+    db->deleteById(Position{.position_id=0,.title="",.category=PositionCategory::Technical_staff,.min_salary=0,.max_salary=0,.created_at=""}, "1");
 
     EXPECT_EQ(countRows("position"), 0);
 }
 
 TEST_F(DeleteModelTest, DeleteClientById) {
     db->appendModel(Client{
-        .id = 0,
+        .client_id = 0,
         .name = "ООО Тест",
         .type = ClientType::Corporate,
         .address = std::nullopt,
@@ -86,20 +86,20 @@ TEST_F(DeleteModelTest, DeleteClientById) {
 
     EXPECT_EQ(countRows("client"), 1);
 
-    db->deleteById(Client{.id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "1");
+    db->deleteById(Client{.client_id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "1");
 
     EXPECT_EQ(countRows("client"), 0);
 }
 
 TEST_F(DeleteModelTest, DeleteEmployeeById) {
-    db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
+    db->appendModel(Department{.department_id=0,.name="IT",.type=DepartmentType::Development});
     db->appendModel(Position{
-        .id=0,.title="Dev",.category=PositionCategory::Technical_staff,
+        .position_id=0,.title="Dev",.category=PositionCategory::Technical_staff,
         .min_salary=100000,.max_salary=200000
     });
 
     db->appendModel(Employee{
-        .id = 0,
+        .employee_id = 0,
         .last_name = "Петров",
         .first_name = "Пётр",
         .patronymic = std::nullopt,
@@ -118,19 +118,19 @@ TEST_F(DeleteModelTest, DeleteEmployeeById) {
 
     EXPECT_EQ(countRows("employee"), 1);
 
-    db->deleteById(Employee{.id=0,.last_name="",.first_name="",.hire_date="",.salary=0,.has_children=false,.children_count=0,.department_id=0,.position_id=0,.is_active=false,.created_at="",.updated_at=""}, "1");
+    db->deleteById(Employee{.employee_id=0,.last_name="",.first_name="",.hire_date="",.salary=0,.has_children=false,.children_count=0,.department_id=0,.position_id=0,.is_active=false,.created_at="",.updated_at=""}, "1");
 
     EXPECT_EQ(countRows("employee"), 0);
 }
 
 TEST_F(DeleteModelTest, DeleteDeveloperSpecializationById) {
-    db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
+    db->appendModel(Department{.department_id=0,.name="IT",.type=DepartmentType::Development});
     db->appendModel(Position{
-        .id=0,.title="Dev",.category=PositionCategory::Technical_staff,
+        .position_id=0,.title="Dev",.category=PositionCategory::Technical_staff,
         .min_salary=100000,.max_salary=200000
     });
     db->appendModel(Employee{
-        .id=0,.last_name="Иванов",.first_name="Иван",.birth_date="1990-01-01",
+        .employee_id=0,.last_name="Иванов",.first_name="Иван",.birth_date="1990-01-01",
         .email="dev@test.ru",.hire_date="2024-01-01",.salary=150000,
         .has_children=false,.children_count=0,.department_id=1,.position_id=1,.is_active=true
     });
@@ -155,19 +155,19 @@ TEST_F(DeleteModelTest, DeleteDeveloperSpecializationById) {
 TEST_F(DeleteModelTest, DeleteNonExistentDepartment) {
     EXPECT_EQ(countRows("department"), 0);
 
-    db->deleteById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "999");
+    db->deleteById(Department{.department_id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "999");
 
     EXPECT_EQ(countRows("department"), 0);
 }
 
 TEST_F(DeleteModelTest, DeleteMultipleRecords) {
-    db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
-    db->appendModel(Department{.id=0,.name="QA",.type=DepartmentType::Testing});
-    db->appendModel(Department{.id=0,.name="HR",.type=DepartmentType::Administrative});
+    db->appendModel(Department{.department_id=0,.name="IT",.type=DepartmentType::Development});
+    db->appendModel(Department{.department_id=0,.name="QA",.type=DepartmentType::Testing});
+    db->appendModel(Department{.department_id=0,.name="HR",.type=DepartmentType::Administrative});
 
     EXPECT_EQ(countRows("department"), 3);
 
-    db->deleteById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "2");
+    db->deleteById(Department{.department_id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "2");
 
     EXPECT_EQ(countRows("department"), 2);
     EXPECT_FALSE(rowExists("department", "department_id", "2"));
@@ -177,7 +177,7 @@ TEST_F(DeleteModelTest, DeleteMultipleRecords) {
 
 TEST_F(DeleteModelTest, DeleteClientWithOptionalFields) {
     db->appendModel(Client{
-        .id = 0,
+        .client_id = 0,
         .name = "ИП Иванов",
         .type = ClientType::Individual_entrepreneur,
         .address = std::string("ул. Пушкина, 1"),
@@ -188,23 +188,23 @@ TEST_F(DeleteModelTest, DeleteClientWithOptionalFields) {
 
     EXPECT_EQ(countRows("client"), 1);
 
-    db->deleteById(Client{.id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "1");
+    db->deleteById(Client{.client_id=0,.name="",.type=ClientType::Corporate,.created_at=""}, "1");
 
     EXPECT_EQ(countRows("client"), 0);
 }
 
 TEST_F(DeleteModelTest, DeleteAndVerifyGone) {
     db->appendModel(Department{
-        .id = 0,
+        .department_id = 0,
         .name = "Тест",
         .type = DepartmentType::Testing
     });
 
-    auto before = db->getModelById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
+    auto before = db->getModelById(Department{.department_id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
     ASSERT_TRUE(before.has_value());
 
-    db->deleteById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
+    db->deleteById(Department{.department_id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
 
-    auto after = db->getModelById(Department{.id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
+    auto after = db->getModelById(Department{.department_id=0,.name="",.type=DepartmentType::Development,.created_at=""}, "1");
     EXPECT_FALSE(after.has_value());
 }

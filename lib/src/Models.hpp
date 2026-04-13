@@ -81,14 +81,14 @@ namespace lib::Models {
     };
 
     struct Department {
-        int id = 0;
+        int department_id = 0;
         std::string name;
         DepartmentType type = DepartmentType::Development;
         std::string created_at;
     };
 
     struct Position {
-        int id = 0;
+        int position_id = 0;
         std::string title;
         PositionCategory category = PositionCategory::Technical_staff;
         double min_salary = 0.0;
@@ -97,7 +97,7 @@ namespace lib::Models {
     };
 
     struct Client {
-        int id = 0;
+        int client_id = 0;
         std::string name;
         ClientType type = ClientType::Corporate;
         std::optional<std::string> address;
@@ -108,10 +108,10 @@ namespace lib::Models {
     };
 
     struct SoftwareLicense {
-        int id;
+        int license_id;
         std::string name;
         std::string vendor;
-        LicenseType type;
+        LicenseType license_type;
         std::string purchase_date;
         std::optional<std::string> expiry_date;
         double cost;
@@ -120,7 +120,7 @@ namespace lib::Models {
     };
 
     struct Employee {
-        int id = 0;
+        int employee_id = 0;
         std::string last_name;
         std::string first_name;
         std::optional<std::string> patronymic;
@@ -159,7 +159,7 @@ namespace lib::Models {
     };
 
     struct ManagerCertification {
-        int id;
+        int certification_id;
         int employee_id;
         std::string cert_type;
         std::string issue_date;
@@ -169,7 +169,7 @@ namespace lib::Models {
     };
 
     struct Project {
-        int id;
+        int project_id;
         std::string name;
         std::optional<std::string> description;
         int client_id;
@@ -187,7 +187,7 @@ namespace lib::Models {
     };
 
     struct ProjectPhase {
-        int id;
+        int phase_id;
         int project_id;
         std::string name;
         std::string start_date;
@@ -197,7 +197,7 @@ namespace lib::Models {
     };
 
     struct ProjectAssignment {
-        int id;
+        int assignment_id;
         int employee_id;
         int project_id;
         std::optional<int> phase_id;
@@ -209,7 +209,7 @@ namespace lib::Models {
     };
 
     struct LicenseAllocation {
-        int id;
+        int allocation_id;
         int license_id;
         std::optional<int> project_id;
         int allocated_seats;
@@ -218,7 +218,7 @@ namespace lib::Models {
     };
 
     struct CloudResource {
-        int id;
+        int resource_id;
         int project_id;
         CloudProvider provider;
         std::string type;
@@ -228,7 +228,7 @@ namespace lib::Models {
     };
 
     struct WorkLog {
-        int id;
+        int log_id;
         int employee_id;
         int project_id;
         std::string task_description;
@@ -238,7 +238,7 @@ namespace lib::Models {
     };
 
     struct Bug {
-        int id;
+        int bug_id;
         int project_id;
         std::string title;
         std::string description;
@@ -252,7 +252,7 @@ namespace lib::Models {
     };
 
     struct Release {
-        int id;
+        int release_id;
         int project_id;
         std::string version;
         std::string release_date;
@@ -262,7 +262,7 @@ namespace lib::Models {
     };
 
     struct Documentation {
-        int id;
+        int doc_id;
         int project_id;
         DocType type;
         int author_id;
@@ -273,9 +273,9 @@ namespace lib::Models {
     };
 
     struct ProjectSpecification {
-        int id;
+        int spec_id;
         int project_id;
-        std::string text;
+        std::string document_text;
         int version;
         std::string created_at;
         int updated_by;

@@ -42,7 +42,7 @@ namespace lib::Meta {
 
         static Models::Department fromRow(const pqxx::row &row) {
             return Models::Department{
-                .id = row["department_id"].as<int>(),
+                .department_id = row["department_id"].as<int>(),
                 .name = row["name"].as<std::string>(),
                 .type = Converters::parseDepartmentType(row["type"].as<std::string>()),
                 .created_at = row["created_at"].as<std::string>()
@@ -82,7 +82,7 @@ namespace lib::Meta {
 
         static Models::Position fromRow(const pqxx::row &row) {
             return Models::Position{
-                .id = row["position_id"].as<int>(),
+                .position_id = row["position_id"].as<int>(),
                 .title = row["title"].as<std::string>(),
                 .category = Converters::parsePositionCategory(row["category"].as<std::string>()),
                 .min_salary = row["min_salary"].as<double>(),
@@ -126,7 +126,7 @@ namespace lib::Meta {
 
         static Models::Client fromRow(const pqxx::row &row) {
             return Models::Client{
-                .id = row["client_id"].as<int>(),
+                .client_id = row["client_id"].as<int>(),
                 .name = row["name"].as<std::string>(),
                 .type = Converters::parseClientType(row["type"].as<std::string>()),
                 .address = row["address"].is_null()
@@ -167,7 +167,7 @@ namespace lib::Meta {
             return std::make_tuple(
                 Converters::toParams(m.name),
                 Converters::toParams(m.vendor),
-                Converters::toParams(m.type),
+                Converters::toParams(m.license_type),
                 Converters::toParams(m.purchase_date),
                 m.expiry_date,
                 Converters::toParams(m.cost),
@@ -177,10 +177,10 @@ namespace lib::Meta {
 
         static Models::SoftwareLicense fromRow(const pqxx::row &row) {
             return Models::SoftwareLicense{
-                .id = row["license_id"].as<int>(),
+                .license_id = row["license_id"].as<int>(),
                 .name = row["name"].as<std::string>(),
                 .vendor = row["vendor"].as<std::string>(),
-                .type = Converters::parseLicenseType(row["license_type"].as<std::string>()),
+                .license_type = Converters::parseLicenseType(row["license_type"].as<std::string>()),
                 .purchase_date = row["purchase_date"].as<std::string>(),
                 .expiry_date = row["expiry_date"].is_null()
                     ? std::nullopt
@@ -240,7 +240,7 @@ namespace lib::Meta {
 
         static Models::Employee fromRow(const pqxx::row &row) {
             return Models::Employee{
-                .id = row["employee_id"].as<int>(),
+                .employee_id = row["employee_id"].as<int>(),
                 .last_name = row["last_name"].as<std::string>(),
                 .first_name = row["first_name"].as<std::string>(),
                 .patronymic = row["patronymic"].is_null()
@@ -401,7 +401,7 @@ namespace lib::Meta {
 
         static Models::ManagerCertification fromRow(const pqxx::row &row) {
             return Models::ManagerCertification{
-                .id = row["certification_id"].as<int>(),
+                .certification_id = row["certification_id"].as<int>(),
                 .employee_id = row["employee_id"].as<int>(),
                 .cert_type = row["cert_type"].as<std::string>(),
                 .issue_date = row["issue_date"].as<std::string>(),
@@ -470,7 +470,7 @@ namespace lib::Meta {
                     row["methodology"].as<std::string>());
 
             return Models::Project{
-                .id = row["project_id"].as<int>(),
+                .project_id = row["project_id"].as<int>(),
                 .name = row["name"].as<std::string>(),
                 .description = row["description"].is_null()
                     ? std::nullopt
@@ -528,7 +528,7 @@ namespace lib::Meta {
 
         static Models::ProjectPhase fromRow(const pqxx::row &row) {
             return Models::ProjectPhase{
-                .id = row["phase_id"].as<int>(),
+                .phase_id = row["phase_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .name = row["name"].as<std::string>(),
                 .start_date = row["start_date"].as<std::string>(),
@@ -579,7 +579,7 @@ namespace lib::Meta {
 
         static Models::ProjectAssignment fromRow(const pqxx::row &row) {
             return Models::ProjectAssignment{
-                .id = row["assignment_id"].as<int>(),
+                .assignment_id = row["assignment_id"].as<int>(),
                 .employee_id = row["employee_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .phase_id = row["phase_id"].is_null()
@@ -631,7 +631,7 @@ namespace lib::Meta {
 
         static Models::LicenseAllocation fromRow(const pqxx::row &row) {
             return Models::LicenseAllocation{
-                .id = row["allocation_id"].as<int>(),
+                .allocation_id = row["allocation_id"].as<int>(),
                 .license_id = row["license_id"].as<int>(),
                 .project_id = row["project_id"].is_null()
                     ? std::nullopt
@@ -677,7 +677,7 @@ namespace lib::Meta {
 
         static Models::CloudResource fromRow(const pqxx::row &row) {
             return Models::CloudResource{
-                .id = row["resource_id"].as<int>(),
+                .resource_id = row["resource_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .provider = Converters::parseCloudProvider(row["provider"].as<std::string>()),
                 .type = row["type"].as<std::string>(),
@@ -723,7 +723,7 @@ namespace lib::Meta {
 
         static Models::WorkLog fromRow(const pqxx::row &row) {
             return Models::WorkLog{
-                .id = row["log_id"].as<int>(),
+                .log_id = row["log_id"].as<int>(),
                 .employee_id = row["employee_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .task_description = row["task_description"].as<std::string>(),
@@ -774,7 +774,7 @@ namespace lib::Meta {
 
         static Models::Bug fromRow(const pqxx::row &row) {
             return Models::Bug{
-                .id = row["bug_id"].as<int>(),
+                .bug_id = row["bug_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .title = row["title"].as<std::string>(),
                 .description = row["description"].as<std::string>(),
@@ -829,7 +829,7 @@ namespace lib::Meta {
 
         static Models::Release fromRow(const pqxx::row &row) {
             return Models::Release{
-                .id = row["release_id"].as<int>(),
+                .release_id = row["release_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .version = row["version"].as<std::string>(),
                 .release_date = row["release_date"].as<std::string>(),
@@ -863,23 +863,21 @@ namespace lib::Meta {
 
         static auto extract(const Models::ProjectSpecification &m) {
             return std::make_tuple(
-                Converters::toParams(m.id),
                 Converters::toParams(m.project_id),
-                Converters::toParams(m.text),
+                Converters::toParams(m.document_text),
                 Converters::toParams(m.version),
-                Converters::toParams(m.created_at),
                 Converters::toParams(m.updated_by)
                 );
         }
 
         static Models::ProjectSpecification fromRow(const pqxx::row &row) {
             return Models::ProjectSpecification{
-                .id = row["spec_id"].as<int>(),
+                .spec_id = row["spec_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
-                .text = row["document_text"].as<std::string>(),
+                .document_text = row["document_text"].as<std::string>(),
                 .version = row["version"].as<int>(),
                 .created_at = row["created_at"].as<std::string>(),
-                .updated_by = row["updated_by"].as<int>(),
+                .updated_by = row["updated_by"].as<int>()
             };
         }
     };
@@ -921,7 +919,7 @@ namespace lib::Meta {
 
         static Models::Documentation fromRow(const pqxx::row &row) {
             return Models::Documentation{
-                .id = row["doc_id"].as<int>(),
+                .doc_id = row["doc_id"].as<int>(),
                 .project_id = row["project_id"].as<int>(),
                 .type = Converters::parseDocType(row["type"].as<std::string>()),
                 .author_id = row["author_id"].as<int>(),

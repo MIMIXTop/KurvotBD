@@ -31,21 +31,21 @@ protected:
 
 TEST_F(SelectModelTest, SelectDepartmentById) {
     db->appendModel(Department{
-        .id = 0, .name = "Тест", .type = DepartmentType::Testing
+        .department_id = 0, .name = "Тест", .type = DepartmentType::Testing
     });
 
     auto result = db->getModelById(Department{}, "1");
 
     ASSERT_TRUE(result.has_value());
     auto dept = std::get<Department>(*result);
-    EXPECT_EQ(dept.id, 1);
+    EXPECT_EQ(dept.department_id, 1);
     EXPECT_EQ(dept.name, "Тест");
     EXPECT_EQ(dept.type, DepartmentType::Testing);
 }
 
 TEST_F(SelectModelTest, SelectPositionById) {
     db->appendModel(Position{
-        .id = 0, .title = "Dev", .category = PositionCategory::Management,
+        .position_id = 0, .title = "Dev", .category = PositionCategory::Management,
         .min_salary = 100000.0, .max_salary = 250000.0
     });
 
@@ -61,7 +61,7 @@ TEST_F(SelectModelTest, SelectPositionById) {
 
 TEST_F(SelectModelTest, SelectClientWithNullOptional) {
     db->appendModel(Client{
-        .id = 0, .name = "ООО Тест", .type = ClientType::Corporate,
+        .client_id = 0, .name = "ООО Тест", .type = ClientType::Corporate,
         .address = std::nullopt, .phone = std::nullopt,
         .email = "test@test.ru", .registration_date = "2024-01-01"
     });
@@ -79,7 +79,7 @@ TEST_F(SelectModelTest, SelectClientWithNullOptional) {
 
 TEST_F(SelectModelTest, SelectClientWithValueOptional) {
     db->appendModel(Client{
-        .id = 0, .name = "ИП Иванов", .type = ClientType::Individual_entrepreneur,
+        .client_id = 0, .name = "ИП Иванов", .type = ClientType::Individual_entrepreneur,
         .address = std::string("ул. Пушкина, 1"),
         .phone = std::string("+79990001122"),
         .email = "ivanov@biz.ru", .registration_date = "2025-01-01"
@@ -94,10 +94,10 @@ TEST_F(SelectModelTest, SelectClientWithValueOptional) {
 }
 
 TEST_F(SelectModelTest, SelectEmployeeById) {
-    db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
-    db->appendModel(Position{.id=0,.title="Dev",.category=PositionCategory::Technical_staff,.min_salary=100000,.max_salary=200000});
+    db->appendModel(Department{.department_id=0,.name="IT",.type=DepartmentType::Development});
+    db->appendModel(Position{.position_id=0,.title="Dev",.category=PositionCategory::Technical_staff,.min_salary=100000,.max_salary=200000});
     db->appendModel(Employee{
-        .id = 0, .last_name = "Петров", .first_name = "Пётр",
+        .employee_id = 0, .last_name = "Петров", .first_name = "Пётр",
         .patronymic = std::string("Иванович"),
         .birth_date = "1995-03-10", .gender = std::string("мужской"),
         .phone = std::nullopt, .email = "petrov@test.ru",
@@ -120,10 +120,10 @@ TEST_F(SelectModelTest, SelectEmployeeById) {
 }
 
 TEST_F(SelectModelTest, SelectDeveloperSpecializationById) {
-    db->appendModel(Department{.id=0,.name="IT",.type=DepartmentType::Development});
-    db->appendModel(Position{.id=0,.title="Dev",.category=PositionCategory::Technical_staff,.min_salary=100000,.max_salary=200000});
+    db->appendModel(Department{.department_id=0,.name="IT",.type=DepartmentType::Development});
+    db->appendModel(Position{.position_id=0,.title="Dev",.category=PositionCategory::Technical_staff,.min_salary=100000,.max_salary=200000});
     db->appendModel(Employee{
-        .id=0,.last_name="Иванов",.first_name="Иван",.birth_date="1990-01-01",
+        .employee_id=0,.last_name="Иванов",.first_name="Иван",.birth_date="1990-01-01",
         .email="dev@test.ru",.hire_date="2024-01-01",.salary=150000,
         .has_children=false,.children_count=0,.department_id=1,.position_id=1,.is_active=true
     });

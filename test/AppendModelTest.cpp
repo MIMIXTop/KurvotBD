@@ -37,7 +37,7 @@ protected:
 
 TEST_F(AppendModelTest, InsertDepartment) {
     db->appendModel(Department{
-        .id = 0,
+        .department_id = 0,
         .name = "Тестовый отдел",
         .type = DepartmentType::Testing
     });
@@ -52,7 +52,7 @@ TEST_F(AppendModelTest, InsertDepartment) {
 
 TEST_F(AppendModelTest, InsertPosition) {
     db->appendModel(Position{
-        .id = 0,
+        .position_id = 0,
         .title = "Junior Dev",
         .category = PositionCategory::Technical_staff,
         .min_salary = 80000.0,
@@ -71,7 +71,7 @@ TEST_F(AppendModelTest, InsertPosition) {
 
 TEST_F(AppendModelTest, InsertClientWithNullOptional) {
     db->appendModel(Client{
-        .id = 0,
+        .client_id = 0,
         .name = "ООО Тест",
         .type = ClientType::Corporate,
         .address = std::nullopt,
@@ -93,7 +93,7 @@ TEST_F(AppendModelTest, InsertClientWithNullOptional) {
 
 TEST_F(AppendModelTest, InsertClientWithValueOptional) {
     db->appendModel(Client{
-        .id = 0,
+        .client_id = 0,
         .name = "ИП Иванов",
         .type = ClientType::Individual_entrepreneur,
         .address = std::string("ул. Пушкина, 1"),
@@ -109,14 +109,14 @@ TEST_F(AppendModelTest, InsertClientWithValueOptional) {
 }
 
 TEST_F(AppendModelTest, InsertEmployee) {
-    db->appendModel(Department{.id = 0, .name = "IT", .type = DepartmentType::Development});
+    db->appendModel(Department{.department_id = 0, .name = "IT", .type = DepartmentType::Development});
     db->appendModel(Position{
-        .id = 0, .title = "Dev", .category = PositionCategory::Technical_staff,
+        .position_id = 0, .title = "Dev", .category = PositionCategory::Technical_staff,
         .min_salary = 100000, .max_salary = 200000
     });
 
     db->appendModel(Employee{
-        .id = 0,
+        .employee_id = 0,
         .last_name = "Петров",
         .first_name = "Пётр",
         .patronymic = std::nullopt,
@@ -151,13 +151,13 @@ TEST_F(AppendModelTest, InsertEmployee) {
 }
 
 TEST_F(AppendModelTest, InsertDeveloperSpecialization) {
-    db->appendModel(Department{.id = 0, .name = "IT", .type = DepartmentType::Development});
+    db->appendModel(Department{.department_id = 0, .name = "IT", .type = DepartmentType::Development});
     db->appendModel(Position{
-        .id = 0, .title = "Dev", .category = PositionCategory::Technical_staff,
+        .position_id = 0, .title = "Dev", .category = PositionCategory::Technical_staff,
         .min_salary = 100000, .max_salary = 200000
     });
     db->appendModel(Employee{
-        .id = 0, .last_name = "Иванов", .first_name = "Иван",
+        .employee_id = 0, .last_name = "Иванов", .first_name = "Иван",
         .birth_date = "1990-01-01", .email = "dev@test.ru",
         .hire_date = "2024-01-01", .salary = 150000,
         .has_children = false, .children_count = 0,
@@ -186,4 +186,10 @@ TEST_F(AppendModelTest, InsertDeveloperSpecialization) {
     EXPECT_EQ(r[0]["experience_years"].as<int>(), 7);
     EXPECT_EQ(r[0]["backend_exp"].as<bool>(), true);
     EXPECT_EQ(r[0]["frontend_exp"].as<bool>(), false);
+}
+
+TEST_F(AppendModelTest, test) {
+    auto res = db->getTablesNames();
+
+    std::println(std::cout,"{}", res);
 }

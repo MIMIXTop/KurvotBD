@@ -68,7 +68,9 @@ void ProjectTeamTableModel::loadAll() {
     teamData = database->getProjectTeam();
     endResetModel();
 
-    std::println(std::cout, "{}", teamData.begin()->phase_name);
+    if (!teamData.empty()) {
+        std::println(std::cout, "{}", teamData.begin()->phase_name);
+    }
 }
 
 void ProjectTeamTableModel::applyFilters(int projectIndex, const QVariantList &roles, const QVariantList &positions, bool isActive, int sortIndex) {
@@ -161,7 +163,7 @@ void ProjectTeamTableModel::updateProjectList() {
             using T = std::decay_t<decltype(model)>;
             if constexpr (std::is_same_v<T, lib::Models::Project>) {
                 m_projectList.append(QString::fromStdString(model.name));
-                m_projectIds.push_back(model.id);
+                m_projectIds.push_back(model.project_id);
             }
         }, variant);
     }

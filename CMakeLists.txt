@@ -4,12 +4,22 @@ project(Kurvot)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(FetchContent)
+
 find_package(GTest REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick Gui Widgets)
 
 qt_policy(SET QTP0001 NEW)
 qt_policy(SET QTP0004 NEW)
+
+FetchContent_Declare(
+        boost_pfr
+        GIT_REPOSITORY https://github.com/boostorg/pfr.git
+        GIT_TAG 2.2.0
+)
+
+FetchContent_MakeAvailable(boost_pfr)
 
 qt_add_executable(Kurvot
     src/main.cpp
@@ -47,6 +57,8 @@ qt_add_executable(Kurvot
     src/Models/SpecificationTableModel.cpp
     src/Models/SessionManager.hpp
     src/Models/SessionManager.cpp
+    src/Models/AdminTable.cpp
+    src/Models/AdminTable.hpp
 )
 
 set_target_properties(Kurvot PROPERTIES
@@ -112,7 +124,8 @@ enable_testing()
 
 file(GLOB_RECURSE TEST_SRCS test/*.cpp)
 
-add_executable(Kurvot_tests ${TEST_SRCS})
+add_executable(Kurvot_tests ${TEST_SRCS}
+        test/MetaFunc.cpp)
 
 target_include_directories(Kurvot_tests PRIVATE lib/src)
 

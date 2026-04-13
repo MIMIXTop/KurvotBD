@@ -19,6 +19,7 @@
 #include "Models/DocumentationTableModel.hpp"
 #include "Models/SpecificationTableModel.hpp"
 #include "Models/SessionManager.hpp"
+#include "Models/AdminTable.hpp"
 
 static QObject* sessionManagerProvider(QQmlEngine* engine, QJSEngine* scriptEngine) {
     Q_UNUSED(engine)
@@ -87,6 +88,10 @@ int main(int argc, char** argv) {
     specificationModel.loadAll();
     engine.rootContext()->setContextProperty("specificationModel", &specificationModel);
 
+    auto adminModel = new AdminTable(&engine);
+    adminModel->initialize();
+    engine.rootContext()->setContextProperty("adminModel", adminModel);
+
     qmlRegisterType<EmployeesTableModel>("Kurvot.Models", 1, 0, "EmployeesTableModel");
     qmlRegisterType<EmployeesWorkloadModel>("Kurvot.Models", 1, 0, "EmployeesWorkloadModel");
     qmlRegisterType<ProjectsTableModel>("Kurvot.Models", 1, 0, "ProjectsTableModel");
@@ -102,6 +107,7 @@ int main(int argc, char** argv) {
     qmlRegisterType<ProjectTechnologiesTableModel>("Kurvot.Models", 1, 0, "ProjectTechnologiesTableModel");
     qmlRegisterType<DocumentationTableModel>("Kurvot.Models", 1, 0, "DocumentationTableModel");
     qmlRegisterType<SpecificationTableModel>("Kurvot.Models", 1, 0, "SpecificationTableModel");
+    qmlRegisterType<AdminTable>("Kurvot.Models", 1, 0, "AdminTable");
 
     QObject::connect(
         &engine,

@@ -49,27 +49,15 @@ Item {
             ComboBox {
                 id: tableSelector
                 Layout.preferredWidth: 300
-                model: [
-                    "employees",
-                    "departments",
-                    "positions",
-                    "projects",
-                    "clients",
-                    "bugs",
-                    "releases",
-                    "technologies",
-                    "project_technologies",
-                    "project_team",
-                    "documentation",
-                    "specifications",
-                    "profitability",
-                    "infrastructure",
-                    "monthly_financial"
-                ]
-                
+                model: adminModel.tableNameList
+
                 onCurrentTextChanged: {
+                    adminModel.currentTableName = currentText
                     statusText.text = "Выбрана таблица: " + currentText
                     statusText.color = "#2196F3"
+                }
+                Component.onCompleted: {
+                    adminModel.currentTableName = currentText
                 }
             }
             
@@ -77,8 +65,9 @@ Item {
                 text: "Загрузить данные"
                 highlighted: true
                 onClicked: {
-                    statusText.text = "Функция загрузки данных не реализована. Реализуйте самостоятельно."
-                    statusText.color = "#ff9800"
+                    adminModel.loadTableData()
+                    statusText.text = "Загружены данные для таблицы: " + tableSelector.currentText
+                    statusText.color = "#4CAF50"
                 }
             }
             
@@ -104,21 +93,75 @@ Item {
                     font.bold: true
                     color: "#333333"
                 }
-                
+                // Table
                 Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     color: "white"
                     border.color: "#dddddd"
                     border.width: 1
-                    
+                    clip: true
+
+                    HorizontalHeaderView {
+                        id: tableHeader
+                        anchors.top: parent.top
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.margins: 1
+                        syncView: tableView
+                        z: 1
+                        model: adminModel.headerList
+                        delegate: Rectangle {
+                            implicitWidth: 150
+                            implicitHeight: 40
+                            color: "#f0f0f0"
+                            border.color: "#dddddd"
+                            border.width: 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: modelData
+                                font.bold: true
+                                color: "#333333"
+                            }
+                        }
+                    }
+
+                    TableView {
+                        id: tableView
+                        anchors.top: tableHeader.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+
+                        model: adminModel
+
+                        columnWidthProvider: function(column) { return 150; }
+                        rowHeightProvider: function(row) { return 40; }
+
+                        delegate: Rectangle {
+                            color: row % 2 === 0 ? "white" : "#fcfcfc" // Зебра
+                            border.color: "#eeeeee"
+                            border.width: 1
+
+                            Text {
+                                anchors.fill: parent
+                                anchors.margins: 8
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                                text: model.display !== undefined ? model.display : ""
+                                elide: Text.ElideRight
+                                color: "#444444"
+                            }
+                        }
+                    }
+
                     Text {
                         anchors.centerIn: parent
-                        text: "Здесь будет отображаться содержимое выбранной таблицы.\n\nДля реализации необходимо:\n1. Создать универсальную модель данных\n2. Получить схему таблицы из information_schema\n3. Реализовать TableView с динамическими колонками\n4. Добавить диалоги для CRUD операций"
-                        horizontalAlignment: Text.AlignHCenter
-                        color: "#888888"
-                        font.pixelSize: 14
-                        wrapMode: Text.WordWrap
+                        text: "Нет данных для отображения"
+                        color: "#999999"
+                        font.pixelSize: 16
+                        visible: tableView.rows === 0
                     }
                 }
                 
