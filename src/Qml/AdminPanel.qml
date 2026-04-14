@@ -324,17 +324,39 @@ Item {
             
             let success = false
             if (editForm.isEditMode) {
-                // Режим редактирования - получаем ID из selectedRowData
-                let recordId = selectedRowData[Object.keys(selectedRowData)[0]] // Первое поле - обычно ID
+                // Режим редактирования - находим primary key из конфигурации
+                let configStr = formHelper.getFormConfig(editForm.currentModel)
+                let config = JSON.parse(configStr)
+                
+                // Ищем primary key поле
+                let pkField = null
+                for (let i = 0; i < config.fields.length; i++) {
+                    if (config.fields[i].is_primary_key) {
+                        pkField = config.fields[i].name
+                        break
+                    }
+                }
+                
+                if (!pkField) {
+                    errorDialog.errorText = "Ошибка: не найден первичный ключ для модели " + editForm.currentModel
+                    errorDialog.open()
+                    return
+                }
+                
+                let recordId = selectedRowData[pkField]
+                console.log("Primary key field:", pkField, "ID:", recordId)
+                
                 success = formHelper.updateRecord(editForm.currentModel, recordId, formData)
                 if (success) {
                     statusText.text = "Запись обновлена: " + editForm.currentModel
                     statusText.color = "#4CAF50"
                     selectedRow = -1
                     selectedRowData = {}
+                    adminModel.loadTableData()
+                    editForm.close()
                 } else {
-                    statusText.text = "Ошибка при обновлении записи"
-                    statusText.color = "#f44336"
+                    errorDialog.errorText = "Ошибка при обновлении записи:\n\n" + formHelper.lastError
+                    errorDialog.open()
                 }
             } else {
                 // Режим добавления
@@ -342,15 +364,41 @@ Item {
                 if (success) {
                     statusText.text = "Запись добавлена: " + editForm.currentModel
                     statusText.color = "#4CAF50"
+                    adminModel.loadTableData()
+                    editForm.close()
                 } else {
-                    statusText.text = "Ошибка при добавлении записи"
-                    statusText.color = "#f44336"
+                    errorDialog.errorText = "Ошибка при добавлении записи:\n\n" + formHelper.lastError
+                    errorDialog.open()
                 }
             }
+        }
+    }
+
+    // Диалог для отображения ошибок БД
+    Dialog {
+        id: errorDialog
+        title: "Ошибка сохранения"
+        modal: true
+        anchors.centerIn: parent
+        width: Math.min(500, parent.width - 40)
+        
+        property string errorText: ""
+        
+        contentItem: Rectangle {
+            color: "white"
+            implicitHeight: errorTextItem.implicitHeight + 40
             
-            if (success) {
-                adminModel.loadTableData()
+            Text {
+                id: errorTextItem
+                anchors.fill: parent
+                anchors.margins: 20
+                text: errorDialog.errorText
+                wrapMode: Text.Wrap
+                color: "#d32f2f"
+                font.pixelSize: 13
             }
         }
+        
+        standardButtons: Dialog.Ok
     }
 }
